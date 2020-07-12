@@ -55,9 +55,9 @@ var extraInputBankTest = outer.GetComponent<ExtraInputBankTest>();
 //Create new SkillFamily
 var firstSkillFamily = ScriptableObject.CreateInstance<SkillFamily>();
 
-//IMPORTANT! Don&#x27;t forget to add name for SkillFamily 
+//IMPORTANT! Do not forget to add name for SkillFamily 
 //because game uses it for saving loadout
-//Also I recomend to follow naming convention &#x27;{PrefabName}{SkillSlot}Family&#x27;
+//Also I recomend to follow naming convention "{PrefabName}{SkillSlot}Family";
 (firstSkillFamily as ScriptableObject).name = "MyCharacterBodyFirstExtraFamily";
 
 //Adding skill variants to the family
@@ -86,6 +86,15 @@ Feel free to ping me on discord `@KingEnderBrine` if you found one.
 
 ***
 # Changelog
-**1.0.0**
+
+*1.0.2*
+
+* One more Readme fix
+
+*1.0.1*
+
+* Readme fix
+
+*1.0.0*
 
 * Mod release.
