@@ -21,20 +21,25 @@ That's all it takes for adding simple skills.
 ***
 #### Full documentation
 All defined classes extend corresponding classes from RoR2. Class naming follows one pattern: `Extra{NameOfRoR2Class}.`
+
 * `ExtraSkillLocator` - The main thing that you need. It's a component that you add to your character prefab to be able to use extra skills.
 **Fields**:
     * GenericSkill `extraFirst` - contains info about first extra skill
     * GenericSkill `extraSecond` - contains info about second extra skill
     * GenericSkill `extraThird` - contains info about third extra skill
     * GenericSkill `extraFourth` - contains info about fourth extra skill
+
 * `ExtraInputBankTest` - Containts info about user inputs state for extra skills.
 **Fields**:
     * InputBankTest.ButtonState `extraSkill1` - contains info about first extra skill state
     * InputBankTest.ButtonState `extraSkill2` - contains info about second extra skill state
     * InputBankTest.ButtonState `extraSkill3` - contains info about third extra skill state
     * InputBankTest.ButtonState `extraSkill4` - contains info about fourth extra skill state
+
 * `ExtraSkillSlot` - Contains consts for extra skill slots. Can be used to get skills from the corresponding slot from `SkillLocator`.
+
 * `RewiredActions` - Contains consts for rewired actions. With that info, you can manually access corresponding buttons state via `Rewired.Player`
+
 * `ExtraSkillSlotsPlugin` - Main class of this mod. There's nothing you can do with it, except to look at BepInPlugin definition to define a dependency to that mod.
 ***
 # Small tips
@@ -44,14 +49,15 @@ If you got to the point where you need more skills, you probably know enough abo
 ```
 var extraInputBankTest = outer.GetComponent<ExtraInputBankTest>();
 ```
+
 * Mini guide about adding extra skill
 ```
 //Create new SkillFamily
 var firstSkillFamily = ScriptableObject.CreateInstance<SkillFamily>();
 
-//IMPORTANT! Don't forget to add name for SkillFamily 
+//IMPORTANT! Don&#x27;t forget to add name for SkillFamily 
 //because game uses it for saving loadout
-//Also I recomend to follow naming convention '{PrefabName}{SkillSlot}Family'
+//Also I recomend to follow naming convention &#x27;{PrefabName}{SkillSlot}Family&#x27;
 (firstSkillFamily as ScriptableObject).name = "MyCharacterBodyFirstExtraFamily";
 
 //Adding skill variants to the family
