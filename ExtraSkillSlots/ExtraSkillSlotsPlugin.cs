@@ -17,7 +17,7 @@ namespace ExtraSkillSlots
     
     [BepInDependency("com.KingEnderBrine.ScrollableLobbyUI")]
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.KingEnderBrine.ExtraSkillSlots", "Extra Skill Slots", "1.0.2")]
+    [BepInPlugin("com.KingEnderBrine.ExtraSkillSlots", "Extra Skill Slots", "1.0.3")]
 
     public class ExtraSkillSlotsPlugin : BaseUnityPlugin
     {

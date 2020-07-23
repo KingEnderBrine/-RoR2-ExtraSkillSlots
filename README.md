@@ -87,14 +87,20 @@ Feel free to ping me on discord `@KingEnderBrine` if you found one.
 ***
 # Changelog
 
-*1.0.2*
+**1.0.3**
+
+* Fixed issue where stats recalculation starts throwing errors in console.
+
+* Updated dependencies
+
+**1.0.2**
 
 * One more Readme fix
 
-*1.0.1*
+**1.0.1**
 
 * Readme fix
 
-*1.0.0*
+**1.0.0**
 
 * Mod release.

@@ -1,11 +1,11 @@
 {
     "name": "ExtraSkillSlots",
-    "version_number": "1.0.2",
+    "version_number": "1.0.3",
     "website_url": "https://github.com/KingEnderBrine/-RoR2-ExtraSkillSlots",
     "description": "Utility mod that allows adding more skills for characters",
     "dependencies": [
         "bbepis-BepInExPack-3.2.0",
         "tristanmcpherson-R2API-2.4.29",
-        "KingEnderBrine-ScrollableLobbyUI-1.0.0"
+        "KingEnderBrine-ScrollableLobbyUI-1.2.1"
     ]
 }

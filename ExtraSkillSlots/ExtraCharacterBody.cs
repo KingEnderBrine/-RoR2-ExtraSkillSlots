@@ -21,6 +21,10 @@ namespace ExtraSkillSlots
             c.EmitDelegate<Action<CharacterBody, float>>((characterBody, scale) =>
             {
                 var extraSkillLocator = characterBody.GetComponent<ExtraSkillLocator>();
+                if (extraSkillLocator)
+                {
+                    return;
+                }
                 if (extraSkillLocator.extraFirst)
                 {
                     extraSkillLocator.extraFirst.cooldownScale = scale;
