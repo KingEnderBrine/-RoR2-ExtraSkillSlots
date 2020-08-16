@@ -15,8 +15,8 @@ namespace ExtraSkillSlots
             c.GotoNext(
                 x => x.MatchLdarg(0),
                 x => x.MatchLdcR4(0));
+            c.Index++;
 
-            c.Emit(OpCodes.Ldarg_0);
             c.Emit(OpCodes.Ldloc, 60);
             c.EmitDelegate<Action<CharacterBody, float>>((characterBody, scale) =>
             {
@@ -42,6 +42,7 @@ namespace ExtraSkillSlots
                     extraSkillLocator.extraFourth.cooldownScale = scale;
                 }
             });
+            c.Emit(OpCodes.Ldarg_0);
         }
     }
 }

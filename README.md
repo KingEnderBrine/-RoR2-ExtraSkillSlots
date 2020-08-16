@@ -87,6 +87,10 @@ Feel free to ping me on discord `@KingEnderBrine` if you found one.
 ***
 # Changelog
 
+**1.0.4**
+
+* Actually fixed stats recalculation hook.
+
 **1.0.3**
 
 * Fixed issue where stats recalculation starts throwing errors in console.
