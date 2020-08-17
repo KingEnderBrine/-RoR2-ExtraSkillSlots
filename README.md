@@ -87,6 +87,14 @@ Feel free to ping me on discord `@KingEnderBrine` if you found one.
 ***
 # Changelog
 
+**1.1.0**
+
+* Updated for `RoR2` release version.
+
+* Changed extra skill slot indices (11, 12, 13, 14). Mainly this was done to not interfere with Sniper's ammo.
+
+* Added support for `Purity` cooldown reduction.
+
 **1.0.4**
 
 * Actually fixed stats recalculation hook.

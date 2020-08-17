@@ -17,11 +17,10 @@ namespace ExtraSkillSlots
         public static readonly ExtraSkillSlot Utility = new ExtraSkillSlot((int)SkillSlot.Utility); 
         public static readonly ExtraSkillSlot Special = new ExtraSkillSlot((int)SkillSlot.Special);
 
-
-        public static readonly ExtraSkillSlot ExtraFirst = new ExtraSkillSlot(4);
-        public static readonly ExtraSkillSlot ExtraSecond = new ExtraSkillSlot(5);
-        public static readonly ExtraSkillSlot ExtraThird = new ExtraSkillSlot(6);
-        public static readonly ExtraSkillSlot ExtraFourth = new ExtraSkillSlot(7);
+        public static readonly ExtraSkillSlot ExtraFirst = new ExtraSkillSlot(11);
+        public static readonly ExtraSkillSlot ExtraSecond = new ExtraSkillSlot(12);
+        public static readonly ExtraSkillSlot ExtraThird = new ExtraSkillSlot(13);
+        public static readonly ExtraSkillSlot ExtraFourth = new ExtraSkillSlot(14);
 
         private ExtraSkillSlot(int value)
         {

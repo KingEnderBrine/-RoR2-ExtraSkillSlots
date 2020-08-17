@@ -1,38 +1,21 @@
 ﻿using BepInEx;
-using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
-using R2API;
+using R2API.Utils;
 using Rewired.Data;
-using SimpleJSON;
 using System;
-using System.IO;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
-using UnityEngine;
 
 namespace ExtraSkillSlots
 {
-    [BepInDependency("com.iDeathHD.FixedSplitscreen", BepInDependency.DependencyFlags.SoftDependency)]
-    
+    [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [BepInDependency("com.KingEnderBrine.ScrollableLobbyUI")]
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.KingEnderBrine.ExtraSkillSlots", "Extra Skill Slots", "1.0.4")]
+    [BepInPlugin("com.KingEnderBrine.ExtraSkillSlots", "Extra Skill Slots", "1.1.0")]
 
     public class ExtraSkillSlotsPlugin : BaseUnityPlugin
     {
-        private static string ExecutingDirectory { get; } = Assembly.GetExecutingAssembly().Location.Replace("\\ExtraSkillSlots.dll", "");
-        
         private void Awake()
         {
-            RegisterLanguage();
-
-            //Because FixedSplitScreen completely override LoadoutPanelController.FromSkillSlot need to override it again
-            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.iDeathHD.FixedSplitscreen"))
-            {
-                RegisterFixedSplitScreenHook();
-            }
-
             //Add actions to RoR2.InputCatalog
             ExtraInputs.AddActionsToInputCatalog();
             
@@ -87,41 +70,6 @@ namespace ExtraSkillSlots
 
             //Fixing getting extra skill slots for UI
             IL.RoR2.UI.LoadoutPanelController.Row.FromSkillSlot += UIHooks.LoadoutPanelControllerFromSkillSlot;
-        }
-
-        private static void RegisterLanguage()
-        {
-            var flag = false;
-            foreach (var file in Directory.GetFiles(ExecutingDirectory, "ess_*.json", SearchOption.AllDirectories))
-            {
-                flag = true;
-                var languageToken = Regex.Match(file, ".+ess_(?<lang>[a-zA-Z]+).json\\Z").Groups["lang"].Value;
-                var tokens = JSON.Parse(File.ReadAllText(file));
-
-                if (languageToken == "en")
-                {
-                    foreach (var key in tokens.Keys)
-                    {
-                        LanguageAPI.Add(key, tokens[key].Value);
-                    }
-                }
-                foreach (var key in tokens.Keys)
-                {
-                    LanguageAPI.Add(key, tokens[key].Value, languageToken);
-                }
-            }
-            if (!flag)
-            {
-                Debug.LogWarning("Localizaiton files not found");
-            }
-        }
-
-        //Applying same hook as for vanilla
-        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        private static void RegisterFixedSplitScreenHook()
-        {
-            var fixCorrectlySaveToRightProfile = typeof(FixedSplitscreen.FixedSplitscreen).GetMethod("FixCorrectlySaveToRightProfile", BindingFlags.NonPublic | BindingFlags.Static);
-            MonoMod.RuntimeDetour.HookGen.HookEndpointManager.Modify(fixCorrectlySaveToRightProfile, (Action<ILContext>)UIHooks.FixedSplitScreenFromSkillSlot);
         }
     }
 }

@@ -1,15 +1,9 @@
-﻿using ExtraSkillSlots;
-using Mono.Cecil.Cil;
+﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using R2API.Utils;
 using RoR2;
 using RoR2.UI;
 using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace ExtraSkillSlots
 {
@@ -83,16 +77,6 @@ namespace ExtraSkillSlots
 
         internal static void LoadoutPanelControllerFromSkillSlot(ILContext il)
         {
-            FromSkillSlotILHookBase(il, 4, 2, 3);
-        }
-
-        internal static void FixedSplitScreenFromSkillSlot(ILContext il)
-        {
-            FromSkillSlotILHookBase(il, 6, 4, 3);
-        }
-        
-        internal static void FromSkillSlotILHookBase(ILContext il, int skillSlotIndex, int titleTokenIndex, int addWIPIconsIndex)
-        {
             var c = new ILCursor(il);
 
             c.GotoNext(
@@ -105,7 +89,7 @@ namespace ExtraSkillSlots
             c.Previous.OpCode = OpCodes.Nop;
             c.Previous.Operand = null;
 
-            c.Emit(OpCodes.Ldloc, skillSlotIndex);
+            c.Emit(OpCodes.Ldloc, 4);
             c.EmitDelegate<Func<SkillSlot, string>>((skillSlot) =>
             {
                 if (skillSlot == ExtraSkillSlot.ExtraFirst)
@@ -127,9 +111,9 @@ namespace ExtraSkillSlots
 
                 throw new ArgumentOutOfRangeException();
             });
-            c.Emit(OpCodes.Stloc, titleTokenIndex);
+            c.Emit(OpCodes.Stloc, 2);
             c.Emit(OpCodes.Ldc_I4_0);
-            c.Emit(OpCodes.Stloc, addWIPIconsIndex);
+            c.Emit(OpCodes.Stloc, 3);
         }
     }
 }
