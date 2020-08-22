@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using EntityStates;
 using MonoMod.RuntimeDetour;
 using R2API.Utils;
 using Rewired.Data;
@@ -10,7 +11,7 @@ namespace ExtraSkillSlots
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [BepInDependency("com.KingEnderBrine.ScrollableLobbyUI")]
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.KingEnderBrine.ExtraSkillSlots", "Extra Skill Slots", "1.1.0")]
+    [BepInPlugin("com.KingEnderBrine.ExtraSkillSlots", "Extra Skill Slots", "1.2.0")]
 
     public class ExtraSkillSlotsPlugin : BaseUnityPlugin
     {
@@ -58,6 +59,21 @@ namespace ExtraSkillSlots
             On.EntityStates.GenericCharacterMain.PerformInputs += ExtraGenericCharacterMain.PerformInputsOverrideHook;
             On.EntityStates.GenericCharacterMain.GatherInputs += ExtraGenericCharacterMain.GatherInputsOverrideHook;
 
+            //Applying override to BaseSkillState
+            IL.EntityStates.BaseSkillState.IsKeyDownAuthority += ExtraBaseSkillState.IsKeyDownAuthorityILHook;
+
+            var baseSkillStateOnEnter = typeof(BaseSkillState).GetMethod("OnEnter", BindingFlags.Public | BindingFlags.Instance);
+            new Hook(baseSkillStateOnEnter, new Action<Action<BaseSkillState>, BaseSkillState>((orig, self) => {
+                ExtraBaseSkillState.Add(self);
+                orig(self);
+            }));
+
+            var baseSkillStateOnExit = typeof(BaseSkillState).GetMethod("OnExit", BindingFlags.Public | BindingFlags.Instance);
+            new Hook(baseSkillStateOnExit, new Action<Action<BaseSkillState>, BaseSkillState>((orig, self) => {
+                orig(self);
+                ExtraBaseSkillState.Remove(self);
+            }));
+
             //Adding custom PlayerCharacterMasterController
             On.RoR2.PlayerCharacterMasterController.Awake += (orig, self) =>
             {
@@ -65,7 +81,7 @@ namespace ExtraSkillSlots
                 self.gameObject.AddComponent<ExtraPlayerCharacterMasterController>();
             };
 
-            //Applying Brainstalks cooldown effect to extra skills
+            //Applying Brainstalks and Purity cooldown effect to extra skills
             IL.RoR2.CharacterBody.RecalculateStats += ExtraCharacterBody.RecalculateStatsILHook;
 
             //Fixing getting extra skill slots for UI

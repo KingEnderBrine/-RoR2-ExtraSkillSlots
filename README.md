@@ -87,6 +87,12 @@ Feel free to ping me on discord `@KingEnderBrine` if you found one.
 ***
 # Changelog
 
+**1.2.0**
+
+* Added `BaseSkillState` hooks
+
+* Again fixed stats recalculation.
+
 **1.1.0**
 
 * Updated for `RoR2` release version.

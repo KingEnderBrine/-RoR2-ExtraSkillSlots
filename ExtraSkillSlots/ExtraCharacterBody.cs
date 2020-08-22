@@ -23,7 +23,7 @@ namespace ExtraSkillSlots
             c.EmitDelegate<Action<CharacterBody, float, float>>((characterBody, scale, flatCooldownReduction) =>
             {
                 var extraSkillLocator = characterBody.GetComponent<ExtraSkillLocator>();
-                if (extraSkillLocator)
+                if (!extraSkillLocator)
                 {
                     return;
                 }

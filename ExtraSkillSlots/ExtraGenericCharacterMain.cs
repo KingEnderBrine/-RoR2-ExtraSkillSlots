@@ -9,11 +9,15 @@ namespace ExtraSkillSlots
     internal class ExtraGenericCharacterMain
     {
         private static readonly PropertyInfo isAuthorityProperty = typeof(GenericCharacterMain).GetProperty("isAuthority", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static readonly MethodInfo canExecuteSkill = typeof(GenericCharacterMain).GetMethod("CanExecuteSkill", BindingFlags.NonPublic | BindingFlags.Instance);
 
         public bool extraSkill1InputReceived;
         public bool extraSkill2InputReceived;
         public bool extraSkill3InputReceived;
         public bool extraSkill4InputReceived;
+
+        public ExtraSkillLocator extraSkillLocator { get; private set; }
+        public ExtraInputBankTest extraInputBankTest { get; private set; }
 
         private static readonly Dictionary<GenericCharacterMain, ExtraGenericCharacterMain> instances = new Dictionary<GenericCharacterMain, ExtraGenericCharacterMain>();
 
@@ -21,7 +25,11 @@ namespace ExtraSkillSlots
 
         internal static ExtraGenericCharacterMain Add(GenericCharacterMain genericCharacterMain)
         {
-            return instances[genericCharacterMain] = new ExtraGenericCharacterMain();
+            return instances[genericCharacterMain] = new ExtraGenericCharacterMain
+            {
+                extraSkillLocator = genericCharacterMain.outer.GetComponent<ExtraSkillLocator>(),
+                extraInputBankTest = genericCharacterMain.outer.GetComponent<ExtraInputBankTest>()
+            };
         }
 
         internal static void Remove(GenericCharacterMain genericCharacterMain)
@@ -47,9 +55,10 @@ namespace ExtraSkillSlots
                 return;
             }
 
-            var extraSkillLocator = self.outer.GetComponent<ExtraSkillLocator>();
-            var extraInputBankTest = self.outer.GetComponent<ExtraInputBankTest>();
             var extraGenericCharacterMain = Get(self);
+
+            var extraSkillLocator = extraGenericCharacterMain.extraSkillLocator;
+            var extraInputBankTest = extraGenericCharacterMain.extraInputBankTest;
 
             if (extraSkillLocator && extraInputBankTest && extraGenericCharacterMain != null)
             {
@@ -63,7 +72,7 @@ namespace ExtraSkillSlots
             {
                 bool flag = inputReceived;
                 inputReceived = false;
-                if (!skillSlot || !justPressed && (!flag || skillSlot.mustKeyPress) || !self.InvokeMethod<bool>("CanExecuteSkill", skillSlot))
+                if (!skillSlot || !justPressed && (!flag || skillSlot.mustKeyPress) || !(bool)canExecuteSkill.Invoke(self, new object[] { skillSlot }))
                     return;
                 skillSlot.ExecuteIfReady();
             }
@@ -73,8 +82,8 @@ namespace ExtraSkillSlots
         {
             orig(self);
 
-            var extraInputBankTest = self.outer.GetComponent<ExtraInputBankTest>();
             var extraGenericCharacterMain = Get(self);
+            var extraInputBankTest = extraGenericCharacterMain.extraInputBankTest;
             if (!extraInputBankTest || extraGenericCharacterMain == null)
             {
                 return;
