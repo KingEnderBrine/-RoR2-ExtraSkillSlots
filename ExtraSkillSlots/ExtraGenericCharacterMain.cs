@@ -8,9 +8,6 @@ namespace ExtraSkillSlots
 {
     internal class ExtraGenericCharacterMain
     {
-        private static readonly PropertyInfo isAuthorityProperty = typeof(GenericCharacterMain).GetProperty("isAuthority", BindingFlags.NonPublic | BindingFlags.Instance);
-        private static readonly MethodInfo canExecuteSkill = typeof(GenericCharacterMain).GetMethod("CanExecuteSkill", BindingFlags.NonPublic | BindingFlags.Instance);
-
         public bool extraSkill1InputReceived;
         public bool extraSkill2InputReceived;
         public bool extraSkill3InputReceived;
@@ -50,7 +47,7 @@ namespace ExtraSkillSlots
         {
             orig(self);
 
-            if (!(bool)isAuthorityProperty.GetValue(self))
+            if (!self.isAuthority)
             {
                 return;
             }
@@ -72,7 +69,7 @@ namespace ExtraSkillSlots
             {
                 bool flag = inputReceived;
                 inputReceived = false;
-                if (!skillSlot || !justPressed && (!flag || skillSlot.mustKeyPress) || !(bool)canExecuteSkill.Invoke(self, new object[] { skillSlot }))
+                if (!skillSlot || !justPressed && (!flag || skillSlot.mustKeyPress) || !self.CanExecuteSkill(skillSlot))
                     return;
                 skillSlot.ExecuteIfReady();
             }

@@ -36,8 +36,8 @@ namespace ExtraSkillSlots
 
             //Lift up copy
             var skillCopyRectTransform = skillCopy.GetComponent<RectTransform>();
-            skillCopyRectTransform.anchorMin = new Vector2(1, 2.15F);
-            skillCopyRectTransform.anchorMax = new Vector2(1, 2.15F);
+            skillCopyRectTransform.anchorMin = new Vector2(1, 2.5F);
+            skillCopyRectTransform.anchorMax = new Vector2(1, 2.5F);
 
             //Changing visual input binding
             var skillKeyText = skillCopy.Find("SkillBackgroundPanel").Find("SkillKeyText");

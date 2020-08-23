@@ -87,6 +87,12 @@ Feel free to ping me on discord `@KingEnderBrine` if you found one.
 ***
 # Changelog
 
+**1.2.1**
+
+* Moved extra skill row up a bit, to not interfere with the default skills stock number.
+
+* Optimization.
+
 **1.2.0**
 
 * Added `BaseSkillState` hooks

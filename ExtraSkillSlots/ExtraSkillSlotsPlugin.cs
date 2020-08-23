@@ -5,13 +5,17 @@ using R2API.Utils;
 using Rewired.Data;
 using System;
 using System.Reflection;
+using System.Security;
+using System.Security.Permissions;
 
+[module: UnverifiableCode]
+[assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 namespace ExtraSkillSlots
 {
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [BepInDependency("com.KingEnderBrine.ScrollableLobbyUI")]
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.KingEnderBrine.ExtraSkillSlots", "Extra Skill Slots", "1.2.0")]
+    [BepInPlugin("com.KingEnderBrine.ExtraSkillSlots", "Extra Skill Slots", "1.2.1")]
 
     public class ExtraSkillSlotsPlugin : BaseUnityPlugin
     {
@@ -80,6 +84,7 @@ namespace ExtraSkillSlots
                 orig(self);
                 self.gameObject.AddComponent<ExtraPlayerCharacterMasterController>();
             };
+            On.RoR2.PlayerCharacterMasterController.SetBody += ExtraPlayerCharacterMasterController.SetBodyOverrideHook;
 
             //Applying Brainstalks and Purity cooldown effect to extra skills
             IL.RoR2.CharacterBody.RecalculateStats += ExtraCharacterBody.RecalculateStatsILHook;

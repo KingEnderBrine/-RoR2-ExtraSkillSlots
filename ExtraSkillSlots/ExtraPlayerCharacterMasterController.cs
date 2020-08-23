@@ -2,6 +2,7 @@
 using Rewired;
 using RoR2;
 using System.Reflection;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace ExtraSkillSlots
@@ -9,7 +10,7 @@ namespace ExtraSkillSlots
     internal class ExtraPlayerCharacterMasterController : NetworkBehaviour
     {
         private PlayerCharacterMasterController playerCharacterMasterController;
-        private static readonly MethodInfo canSendBodyInputMethod = typeof(PlayerCharacterMasterController).GetMethod("CanSendBodyInput", BindingFlags.NonPublic | BindingFlags.Static);
+        private ExtraInputBankTest extraInputBankTest;
 
         public void Awake()
         {
@@ -18,14 +19,7 @@ namespace ExtraSkillSlots
 
         public void FixedUpdate()
         {
-            var body = playerCharacterMasterController.GetFieldValue<CharacterBody>("body");
-            if (!body)
-            {
-                return;
-            }
-
-            var extraInputBankTest = body.GetComponent<ExtraInputBankTest>();
-            if (!playerCharacterMasterController.hasEffectiveAuthority || !extraInputBankTest)
+            if (!extraInputBankTest || !playerCharacterMasterController.hasEffectiveAuthority || !extraInputBankTest)
             {
                 return;
             }
@@ -35,21 +29,8 @@ namespace ExtraSkillSlots
             var skill3State = false;
             var skill4State = false;
 
-            LocalUser localUser = null;
-            Player inputPlayer = null;
-            CameraRigController cameraRigController = null;
-            var args = new object[]
+            if (PlayerCharacterMasterController.CanSendBodyInput(playerCharacterMasterController.networkUser, out _, out var inputPlayer, out _))
             {
-                playerCharacterMasterController.networkUser,
-                localUser,
-                inputPlayer,
-                cameraRigController
-            };
-
-            if ((bool)canSendBodyInputMethod.Invoke(null, args))
-            {
-                inputPlayer = args[2] as Player;
-
                 skill1State = inputPlayer.GetButton(RewiredActions.FirstExtraSkill);
                 skill2State = inputPlayer.GetButton(RewiredActions.SecondExtraSkill);
                 skill3State = inputPlayer.GetButton(RewiredActions.ThirdExtraSkill);
@@ -60,6 +41,19 @@ namespace ExtraSkillSlots
             extraInputBankTest.extraSkill2.PushState(skill2State);
             extraInputBankTest.extraSkill3.PushState(skill3State);
             extraInputBankTest.extraSkill4.PushState(skill4State);
+        }
+
+        internal static void SetBodyOverrideHook(On.RoR2.PlayerCharacterMasterController.orig_SetBody orig, PlayerCharacterMasterController self,  GameObject newBody)
+        {
+            orig(self, newBody);
+
+            var extraMaster = self.GetComponent<ExtraPlayerCharacterMasterController>();
+            if (!extraMaster)
+            {
+                return;
+            }
+
+            extraMaster.extraInputBankTest = self.body ? self.body.GetComponent<ExtraInputBankTest>() : null;
         }
     }
 }

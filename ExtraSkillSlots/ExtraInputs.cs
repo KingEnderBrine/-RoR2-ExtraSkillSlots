@@ -12,20 +12,15 @@ namespace ExtraSkillSlots
     {
         internal static void AddActionsToInputCatalog()
         {
-            //Using reflection because "ActionAxisPair" is private
-            var actionAxisPairConstructor = typeof(InputCatalog).GetNestedType("ActionAxisPair", BindingFlags.NonPublic)?.GetConstructor(new Type[] { typeof(string), typeof(AxisRange) });
+            var extraActionAxisPairFirst = new InputCatalog.ActionAxisPair(RewiredActions.FirstExtraSkillName, AxisRange.Full);
+            var extraActionAxisPairSecond = new InputCatalog.ActionAxisPair(RewiredActions.SecondExtraSkillName, AxisRange.Full);
+            var extraActionAxisPairThird = new InputCatalog.ActionAxisPair(RewiredActions.ThirdExtraSkillName, AxisRange.Full);
+            var extraActionAxisPairFourth = new InputCatalog.ActionAxisPair(RewiredActions.FourthExtraSkillName, AxisRange.Full);
 
-            var extraActionAxisPairFirst = actionAxisPairConstructor.Invoke(new object[] { RewiredActions.FirstExtraSkillName, AxisRange.Full });
-            var extraActionAxisPairSecond = actionAxisPairConstructor.Invoke(new object[] { RewiredActions.SecondExtraSkillName, AxisRange.Full });
-            var extraActionAxisPairThird = actionAxisPairConstructor.Invoke(new object[] { RewiredActions.ThirdExtraSkillName, AxisRange.Full });
-            var extraActionAxisPairFourth = actionAxisPairConstructor.Invoke(new object[] { RewiredActions.FourthExtraSkillName, AxisRange.Full });
-
-            var actionToToken = typeof(InputCatalog).GetField("actionToToken", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
-
-            actionToToken.InvokeMethod("Add", new object[] { extraActionAxisPairFirst, LanguageConsts.EXTRA_SKILL_SLOTS_FIRST_EXTRA_SKILL });
-            actionToToken.InvokeMethod("Add", new object[] { extraActionAxisPairSecond, LanguageConsts.EXTRA_SKILL_SLOTS_SECOND_EXTRA_SKILL });
-            actionToToken.InvokeMethod("Add", new object[] { extraActionAxisPairThird, LanguageConsts.EXTRA_SKILL_SLOTS_THIRD_EXTRA_SKILL });
-            actionToToken.InvokeMethod("Add", new object[] { extraActionAxisPairFourth, LanguageConsts.EXTRA_SKILL_SLOTS_FOURTH_EXTRA_SKILL });
+            InputCatalog.actionToToken.Add(extraActionAxisPairFirst, LanguageConsts.EXTRA_SKILL_SLOTS_FIRST_EXTRA_SKILL);
+            InputCatalog.actionToToken.Add(extraActionAxisPairSecond, LanguageConsts.EXTRA_SKILL_SLOTS_SECOND_EXTRA_SKILL);
+            InputCatalog.actionToToken.Add(extraActionAxisPairThird, LanguageConsts.EXTRA_SKILL_SLOTS_THIRD_EXTRA_SKILL);
+            InputCatalog.actionToToken.Add(extraActionAxisPairFourth, LanguageConsts.EXTRA_SKILL_SLOTS_FOURTH_EXTRA_SKILL);
         }
 
         internal static void AddCustomActions(Action<UserData> orig, UserData self)

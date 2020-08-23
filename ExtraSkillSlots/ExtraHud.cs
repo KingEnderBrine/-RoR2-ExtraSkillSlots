@@ -28,32 +28,32 @@ namespace ExtraSkillSlots
                 var component = hud.targetBodyObject.GetComponent<ExtraSkillLocator>();
                 if (component)
                 {
-                    var masterController = hud.targetMaster ? hud.targetMaster.GetComponent<PlayerCharacterMasterController>() : null;
+                    var masterController = hud.targetMaster ? hud.targetMaster.playerCharacterMasterController : null;
                     
                     if (extraSkillIconFirst)
                     {
-                        extraSkillIconFirst.gameObject.SetActive(component.extraFirst);
+                        extraSkillIconFirst.gameObject.SetActive(ShouldShow(component.extraFirst));
                         extraSkillIconFirst.targetSkillSlot = ExtraSkillSlot.ExtraFirst;
                         extraSkillIconFirst.targetSkill = component.extraFirst;
                         extraSkillIconFirst.playerCharacterMasterController = masterController;
                     }
                     if (extraSkillIconSecond)
                     {
-                        extraSkillIconSecond.gameObject.SetActive(component.extraSecond);
+                        extraSkillIconSecond.gameObject.SetActive(ShouldShow(component.extraSecond));
                         extraSkillIconSecond.targetSkillSlot = ExtraSkillSlot.ExtraSecond;
                         extraSkillIconSecond.targetSkill = component.extraSecond;
                         extraSkillIconSecond.playerCharacterMasterController = masterController;
                     }
                     if (extraSkillIconThird)
                     {
-                        extraSkillIconThird.gameObject.SetActive(component.extraThird);
+                        extraSkillIconThird.gameObject.SetActive(ShouldShow(component.extraThird));
                         extraSkillIconThird.targetSkillSlot = ExtraSkillSlot.ExtraThird;
                         extraSkillIconThird.targetSkill = component.extraThird;
                         extraSkillIconThird.playerCharacterMasterController = masterController;
                     }
                     if (extraSkillIconFourth)
                     {
-                        extraSkillIconFourth.gameObject.SetActive(component.extraFourth);
+                        extraSkillIconFourth.gameObject.SetActive(ShouldShow(component.extraFourth));
                         extraSkillIconFourth.targetSkillSlot = ExtraSkillSlot.ExtraFourth;
                         extraSkillIconFourth.targetSkill = component.extraFourth;
                         extraSkillIconFourth.playerCharacterMasterController = masterController;
@@ -79,6 +79,11 @@ namespace ExtraSkillSlots
                     }
                 }
             }
+        }
+
+        private bool ShouldShow(GenericSkill skill)
+        {
+            return skill && skill.skillDef && skill.skillDef.skillName != "Disabled";
         }
     }
 }

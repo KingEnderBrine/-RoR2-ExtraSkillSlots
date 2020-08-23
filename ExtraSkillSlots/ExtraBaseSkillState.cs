@@ -14,8 +14,6 @@ namespace ExtraSkillSlots
 {
     internal class ExtraBaseSkillState
     {
-        private static readonly PropertyInfo skillLocatorProperty = typeof(EntityState).GetProperty("skillLocator", BindingFlags.NonPublic | BindingFlags.Instance);
-
         private static readonly Dictionary<BaseSkillState, ExtraBaseSkillState> instances = new Dictionary<BaseSkillState, ExtraBaseSkillState>();
 
         public ExtraSkillLocator extraSkillLocator { get; private set; }
@@ -70,7 +68,7 @@ namespace ExtraSkillSlots
                     return false;
                 }
 
-                var skillSlot = (skillLocatorProperty.GetValue(self) as SkillLocator).FindSkillSlot(self.activatorSkillSlot);
+                var skillSlot = self.skillLocator.FindSkillSlot(self.activatorSkillSlot);
                 if (skillSlot == ExtraSkillSlot.ExtraFirst)
                 {
                     return extraInputBank.extraSkill1.down;
