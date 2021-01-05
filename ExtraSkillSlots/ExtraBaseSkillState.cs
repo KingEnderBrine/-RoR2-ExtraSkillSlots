@@ -14,7 +14,7 @@ namespace ExtraSkillSlots
 {
     internal class ExtraBaseSkillState
     {
-        private static readonly Dictionary<BaseSkillState, ExtraBaseSkillState> instances = new Dictionary<BaseSkillState, ExtraBaseSkillState>();
+        internal static readonly Dictionary<BaseSkillState, ExtraBaseSkillState> instances = new Dictionary<BaseSkillState, ExtraBaseSkillState>();
 
         public ExtraSkillLocator extraSkillLocator { get; private set; }
         public ExtraInputBankTest extraInputBankTest { get; private set; }

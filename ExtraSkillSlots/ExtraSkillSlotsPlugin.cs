@@ -15,7 +15,7 @@ namespace ExtraSkillSlots
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [BepInDependency("com.KingEnderBrine.ScrollableLobbyUI")]
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.KingEnderBrine.ExtraSkillSlots", "Extra Skill Slots", "1.2.1")]
+    [BepInPlugin("com.KingEnderBrine.ExtraSkillSlots", "Extra Skill Slots", "1.2.2")]
 
     public class ExtraSkillSlotsPlugin : BaseUnityPlugin
     {
@@ -66,13 +66,16 @@ namespace ExtraSkillSlots
             //Applying override to BaseSkillState
             IL.EntityStates.BaseSkillState.IsKeyDownAuthority += ExtraBaseSkillState.IsKeyDownAuthorityILHook;
 
-            var baseSkillStateOnEnter = typeof(BaseSkillState).GetMethod("OnEnter", BindingFlags.Public | BindingFlags.Instance);
-            new Hook(baseSkillStateOnEnter, new Action<Action<BaseSkillState>, BaseSkillState>((orig, self) => {
-                ExtraBaseSkillState.Add(self);
+            On.EntityStates.BaseState.OnEnter += (orig, self) =>
+            {
+                if (self is BaseSkillState selfSkillState)
+                {
+                    ExtraBaseSkillState.Add(selfSkillState);
+                }
                 orig(self);
-            }));
+            };
 
-            var baseSkillStateOnExit = typeof(BaseSkillState).GetMethod("OnExit", BindingFlags.Public | BindingFlags.Instance);
+            var baseSkillStateOnExit = typeof(BaseSkillState).GetMethod("OnExit", BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
             new Hook(baseSkillStateOnExit, new Action<Action<BaseSkillState>, BaseSkillState>((orig, self) => {
                 orig(self);
                 ExtraBaseSkillState.Remove(self);

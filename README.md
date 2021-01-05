@@ -87,6 +87,10 @@ Feel free to ping me on discord `@KingEnderBrine` if you found one.
 ***
 # Changelog
 
+**1.2.2**
+
+* Minor fixes
+
 **1.2.1**
 
 * Moved extra skill row up a bit, to not interfere with the default skills stock number.

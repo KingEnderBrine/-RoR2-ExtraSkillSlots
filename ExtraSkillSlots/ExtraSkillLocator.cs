@@ -25,24 +25,27 @@ namespace ExtraSkillSlots
         internal static GenericSkill GetSkillOverrideHook(On.RoR2.SkillLocator.orig_GetSkill orig, SkillLocator self, SkillSlot skillSlot)
         {
             var extraSkillLocator = self.GetComponent<ExtraSkillLocator>();
-            if (skillSlot == ExtraSkillSlot.ExtraFirst)
+            if (extraSkillLocator)
             {
-                return extraSkillLocator?.extraFirst;
-            }
+                if (skillSlot == ExtraSkillSlot.ExtraFirst)
+                {
+                    return extraSkillLocator.extraFirst;
+                }
 
-            if (skillSlot == ExtraSkillSlot.ExtraSecond)
-            {
-                return extraSkillLocator?.extraSecond;
-            }
+                if (skillSlot == ExtraSkillSlot.ExtraSecond)
+                {
+                    return extraSkillLocator.extraSecond;
+                }
 
-            if (skillSlot == ExtraSkillSlot.ExtraThird)
-            {
-                return extraSkillLocator?.extraThird;
-            }
+                if (skillSlot == ExtraSkillSlot.ExtraThird)
+                {
+                    return extraSkillLocator.extraThird;
+                }
 
-            if (skillSlot == ExtraSkillSlot.ExtraFourth)
-            {
-                return extraSkillLocator?.extraFourth;
+                if (skillSlot == ExtraSkillSlot.ExtraFourth)
+                {
+                    return extraSkillLocator.extraFourth;
+                }
             }
 
             return orig(self, skillSlot);
@@ -57,21 +60,24 @@ namespace ExtraSkillSlots
                 return SkillSlot.None;
             }
 
-            if (skillComponent == extraSkillLocator?.extraFirst)
+            if (extraSkillLocator)
             {
-                return ExtraSkillSlot.ExtraFirst;
-            }
-            if (skillComponent == extraSkillLocator?.extraSecond)
-            {
-                return ExtraSkillSlot.ExtraSecond;
-            }
-            if (skillComponent == extraSkillLocator?.extraThird)
-            {
-                return ExtraSkillSlot.ExtraThird;
-            }
-            if (skillComponent == extraSkillLocator?.extraFourth)
-            {
-                return ExtraSkillSlot.ExtraFourth;
+                if (skillComponent == extraSkillLocator.extraFirst)
+                {
+                    return ExtraSkillSlot.ExtraFirst;
+                }
+                if (skillComponent == extraSkillLocator.extraSecond)
+                {
+                    return ExtraSkillSlot.ExtraSecond;
+                }
+                if (skillComponent == extraSkillLocator.extraThird)
+                {
+                    return ExtraSkillSlot.ExtraThird;
+                }
+                if (skillComponent == extraSkillLocator.extraFourth)
+                {
+                    return ExtraSkillSlot.ExtraFourth;
+                }
             }
 
             return orig(self, skillComponent);

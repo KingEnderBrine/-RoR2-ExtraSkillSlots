@@ -1,7 +1,4 @@
-﻿using R2API.Utils;
-using Rewired;
-using RoR2;
-using System.Reflection;
+﻿using RoR2;
 using UnityEngine;
 using UnityEngine.Networking;
 
