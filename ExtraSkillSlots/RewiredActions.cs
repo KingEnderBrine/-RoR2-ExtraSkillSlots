@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ExtraSkillSlots
+﻿namespace ExtraSkillSlots
 {
     public static class RewiredActions
     {

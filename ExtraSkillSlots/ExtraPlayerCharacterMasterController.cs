@@ -52,5 +52,11 @@ namespace ExtraSkillSlots
 
             extraMaster.extraInputBankTest = self.body ? self.body.GetComponent<ExtraInputBankTest>() : null;
         }
+
+        internal static void AwakeHook(On.RoR2.PlayerCharacterMasterController.orig_Awake orig, PlayerCharacterMasterController self)
+        {
+            orig(self);
+            self.gameObject.AddComponent<ExtraPlayerCharacterMasterController>();
+        }
     }
 }

@@ -86,6 +86,10 @@ Feel free to ping me on discord `@KingEnderBrine` if you found one.
 
 ***
 # Changelog
+**1.3.2**
+
+* Fixed an issue when starting a run hud would not show up.
+
 **1.3.1**
 
 * Added missing MMHOOK_Standalone dependency

@@ -1,8 +1,6 @@
-﻿using ExtraSkillSlots;
-using Mono.Cecil.Cil;
+﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using RoR2;
-using System;
 
 namespace ExtraSkillSlots
 {
@@ -18,37 +16,39 @@ namespace ExtraSkillSlots
                 x => x.MatchCallOrCallvirt<CharacterBody>("set_critHeal"));
             c.Index++;
             
+            c.Emit(OpCodes.Ldarg_0);
             c.Emit(OpCodes.Ldloc, 66);
             c.Emit(OpCodes.Ldloc, 63);
-            c.EmitDelegate<Action<CharacterBody, float, float>>((characterBody, scale, flatCooldownReduction) =>
+            c.Emit(OpCodes.Call, typeof(ExtraCharacterBody).GetMethod(nameof(RecalculateCooldowns), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static));
+        }
+
+        private static void RecalculateCooldowns(CharacterBody characterBody, float scale, float flatCooldownReduction)
+        {
+            var extraSkillLocator = characterBody.GetComponent<ExtraSkillLocator>();
+            if (!extraSkillLocator)
             {
-                var extraSkillLocator = characterBody.GetComponent<ExtraSkillLocator>();
-                if (!extraSkillLocator)
-                {
-                    return;
-                }
-                if (extraSkillLocator.extraFirst)
-                {
-                    extraSkillLocator.extraFirst.cooldownScale = scale;
-                    extraSkillLocator.extraFirst.flatCooldownReduction = flatCooldownReduction;
-                }
-                if (extraSkillLocator.extraSecond)
-                {
-                    extraSkillLocator.extraSecond.cooldownScale = scale;
-                    extraSkillLocator.extraSecond.flatCooldownReduction = flatCooldownReduction;
-                }
-                if (extraSkillLocator.extraThird)
-                {
-                    extraSkillLocator.extraThird.cooldownScale = scale;
-                    extraSkillLocator.extraThird.flatCooldownReduction = flatCooldownReduction;
-                }
-                if (extraSkillLocator.extraFourth)
-                {
-                    extraSkillLocator.extraFourth.cooldownScale = scale;
-                    extraSkillLocator.extraFourth.flatCooldownReduction = flatCooldownReduction;
-                }
-            });
-            c.Emit(OpCodes.Ldarg_0);
+                return;
+            }
+            if (extraSkillLocator.extraFirst)
+            {
+                extraSkillLocator.extraFirst.cooldownScale = scale;
+                extraSkillLocator.extraFirst.flatCooldownReduction = flatCooldownReduction;
+            }
+            if (extraSkillLocator.extraSecond)
+            {
+                extraSkillLocator.extraSecond.cooldownScale = scale;
+                extraSkillLocator.extraSecond.flatCooldownReduction = flatCooldownReduction;
+            }
+            if (extraSkillLocator.extraThird)
+            {
+                extraSkillLocator.extraThird.cooldownScale = scale;
+                extraSkillLocator.extraThird.flatCooldownReduction = flatCooldownReduction;
+            }
+            if (extraSkillLocator.extraFourth)
+            {
+                extraSkillLocator.extraFourth.cooldownScale = scale;
+                extraSkillLocator.extraFourth.flatCooldownReduction = flatCooldownReduction;
+            }
         }
     }
 }

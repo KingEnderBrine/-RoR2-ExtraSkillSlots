@@ -1,12 +1,10 @@
 ﻿using RoR2;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace ExtraSkillSlots
 {
     [RequireComponent(typeof(InputBankTest))]
+    [DisallowMultipleComponent]
     public class ExtraInputBankTest : MonoBehaviour
     {
         public InputBankTest.ButtonState extraSkill1;

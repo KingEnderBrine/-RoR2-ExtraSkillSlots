@@ -1,11 +1,13 @@
 ﻿using EntityStates;
 using RoR2;
-using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace ExtraSkillSlots
 {
     internal class ExtraGenericCharacterMain
     {
+        private static readonly ConditionalWeakTable<GenericCharacterMain, ExtraGenericCharacterMain> instances = new ConditionalWeakTable<GenericCharacterMain, ExtraGenericCharacterMain>();
+        
         public bool extraSkill1InputReceived;
         public bool extraSkill2InputReceived;
         public bool extraSkill3InputReceived;
@@ -14,32 +16,7 @@ namespace ExtraSkillSlots
         public ExtraSkillLocator ExtraSkillLocator { get; private set; }
         public ExtraInputBankTest ExtraInputBankTest { get; private set; }
 
-        private static readonly Dictionary<GenericCharacterMain, ExtraGenericCharacterMain> instances = new Dictionary<GenericCharacterMain, ExtraGenericCharacterMain>();
-
         private ExtraGenericCharacterMain() { }
-
-        internal static ExtraGenericCharacterMain Add(GenericCharacterMain genericCharacterMain)
-        {
-            return instances[genericCharacterMain] = new ExtraGenericCharacterMain
-            {
-                ExtraSkillLocator = genericCharacterMain.outer.GetComponent<ExtraSkillLocator>(),
-                ExtraInputBankTest = genericCharacterMain.outer.GetComponent<ExtraInputBankTest>()
-            };
-        }
-
-        internal static void Remove(GenericCharacterMain genericCharacterMain)
-        {
-            instances.Remove(genericCharacterMain);
-        }
-
-        internal static ExtraGenericCharacterMain Get(GenericCharacterMain genericCharacterMain)
-        {
-            if (instances.TryGetValue(genericCharacterMain, out var extraGenericCharacterMain))
-            {
-                return extraGenericCharacterMain;
-            }
-            return null;
-        }
 
         internal static void PerformInputsOverrideHook(On.EntityStates.GenericCharacterMain.orig_PerformInputs orig, GenericCharacterMain self)
         {
@@ -50,7 +27,14 @@ namespace ExtraSkillSlots
                 return;
             }
 
-            var extraGenericCharacterMain = Get(self);
+            if (!instances.TryGetValue(self, out var extraGenericCharacterMain))
+            {
+                instances.Add(self, extraGenericCharacterMain = new ExtraGenericCharacterMain
+                {
+                    ExtraSkillLocator = self.outer.GetComponent<ExtraSkillLocator>(),
+                    ExtraInputBankTest = self.outer.GetComponent<ExtraInputBankTest>()
+                });
+            }
 
             var extraSkillLocator = extraGenericCharacterMain.ExtraSkillLocator;
             var extraInputBankTest = extraGenericCharacterMain.ExtraInputBankTest;
@@ -77,9 +61,17 @@ namespace ExtraSkillSlots
         {
             orig(self);
 
-            var extraGenericCharacterMain = Get(self);
+            if (!instances.TryGetValue(self, out var extraGenericCharacterMain))
+            {
+                instances.Add(self, extraGenericCharacterMain = new ExtraGenericCharacterMain
+                {
+                    ExtraSkillLocator = self.outer.GetComponent<ExtraSkillLocator>(),
+                    ExtraInputBankTest = self.outer.GetComponent<ExtraInputBankTest>()
+                });
+            }
+
             var extraInputBankTest = extraGenericCharacterMain.ExtraInputBankTest;
-            if (!extraInputBankTest || extraGenericCharacterMain == null)
+            if (!extraInputBankTest)
             {
                 return;
             }

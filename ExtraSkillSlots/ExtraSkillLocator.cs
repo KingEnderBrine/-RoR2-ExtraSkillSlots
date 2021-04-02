@@ -10,6 +10,7 @@ namespace ExtraSkillSlots
     /// Just a container for extra skill slots
     /// </summary>
     [RequireComponent(typeof(SkillLocator))]
+    [DisallowMultipleComponent]
     public class ExtraSkillLocator : MonoBehaviour
     {
         public GenericSkill extraFirst;
@@ -17,62 +18,61 @@ namespace ExtraSkillSlots
         public GenericSkill extraThird;
         public GenericSkill extraFourth;
 
+        private void Awake()
+        {
+            if (!GetComponent<ExtraInputBankTest>())
+            {
+                gameObject.AddComponent<ExtraInputBankTest>();
+            }
+        }
+
         internal static GenericSkill GetSkillOverrideHook(On.RoR2.SkillLocator.orig_GetSkill orig, SkillLocator self, SkillSlot skillSlot)
         {
             var extraSkillLocator = self.GetComponent<ExtraSkillLocator>();
-            if (extraSkillLocator)
+            if (!extraSkillLocator)
             {
-                if (skillSlot == ExtraSkillSlot.ExtraFirst)
-                {
-                    return extraSkillLocator.extraFirst;
-                }
-
-                if (skillSlot == ExtraSkillSlot.ExtraSecond)
-                {
-                    return extraSkillLocator.extraSecond;
-                }
-
-                if (skillSlot == ExtraSkillSlot.ExtraThird)
-                {
-                    return extraSkillLocator.extraThird;
-                }
-
-                if (skillSlot == ExtraSkillSlot.ExtraFourth)
-                {
-                    return extraSkillLocator.extraFourth;
-                }
+                return orig(self, skillSlot);
             }
 
-            return orig(self, skillSlot);
+            return (ExtraSkillSlot)skillSlot switch
+            {
+                ExtraSkillSlot.ExtraFirst => extraSkillLocator.extraFirst,
+                ExtraSkillSlot.ExtraSecond => extraSkillLocator.extraSecond,
+                ExtraSkillSlot.ExtraThird => extraSkillLocator.extraThird,
+                ExtraSkillSlot.ExtraFourth => extraSkillLocator.extraFourth,
+                _ => orig(self, skillSlot)
+            };
         }
 
         internal static SkillSlot FindSkillSlotOverrideHook(On.RoR2.SkillLocator.orig_FindSkillSlot orig, SkillLocator self, GenericSkill skillComponent)
         {
             var extraSkillLocator = self.GetComponent<ExtraSkillLocator>();
 
+            if (!extraSkillLocator)
+            {
+                return orig(self, skillComponent);
+            }
+
             if (!skillComponent)
             {
                 return SkillSlot.None;
             }
 
-            if (extraSkillLocator)
+            if (skillComponent == extraSkillLocator.extraFirst)
             {
-                if (skillComponent == extraSkillLocator.extraFirst)
-                {
-                    return ExtraSkillSlot.ExtraFirst;
-                }
-                if (skillComponent == extraSkillLocator.extraSecond)
-                {
-                    return ExtraSkillSlot.ExtraSecond;
-                }
-                if (skillComponent == extraSkillLocator.extraThird)
-                {
-                    return ExtraSkillSlot.ExtraThird;
-                }
-                if (skillComponent == extraSkillLocator.extraFourth)
-                {
-                    return ExtraSkillSlot.ExtraFourth;
-                }
+                return (SkillSlot)ExtraSkillSlot.ExtraFirst;
+            }
+            if (skillComponent == extraSkillLocator.extraSecond)
+            {
+                return (SkillSlot)ExtraSkillSlot.ExtraSecond;
+            }
+            if (skillComponent == extraSkillLocator.extraThird)
+            {
+                return (SkillSlot)ExtraSkillSlot.ExtraThird;
+            }
+            if (skillComponent == extraSkillLocator.extraFourth)
+            {
+                return (SkillSlot)ExtraSkillSlot.ExtraFourth;
             }
 
             return orig(self, skillComponent);
