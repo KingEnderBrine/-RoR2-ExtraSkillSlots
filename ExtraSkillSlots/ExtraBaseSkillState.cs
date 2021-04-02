@@ -1,14 +1,8 @@
 ﻿using EntityStates;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using R2API.Utils;
-using RoR2;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
-using UnityEngine.Networking;
 
 namespace ExtraSkillSlots
 {
@@ -16,15 +10,15 @@ namespace ExtraSkillSlots
     {
         internal static readonly Dictionary<BaseSkillState, ExtraBaseSkillState> instances = new Dictionary<BaseSkillState, ExtraBaseSkillState>();
 
-        public ExtraSkillLocator extraSkillLocator { get; private set; }
-        public ExtraInputBankTest extraInputBankTest { get; private set; }
+        public ExtraSkillLocator ExtraSkillLocator { get; private set; }
+        public ExtraInputBankTest ExtraInputBankTest { get; private set; }
 
         internal static ExtraBaseSkillState Add(BaseSkillState baseSkillState)
         {
             return instances[baseSkillState] = new ExtraBaseSkillState
             {
-                extraSkillLocator = baseSkillState.outer.GetComponent<ExtraSkillLocator>(),
-                extraInputBankTest = baseSkillState.outer.GetComponent<ExtraInputBankTest>()
+                ExtraSkillLocator = baseSkillState.outer.GetComponent<ExtraSkillLocator>(),
+                ExtraInputBankTest = baseSkillState.outer.GetComponent<ExtraInputBankTest>()
             };
         }
 
@@ -59,8 +53,8 @@ namespace ExtraSkillSlots
             {
                 var extraBaseSkillState = Get(self);
                 
-                var extraSkillLocator = extraBaseSkillState.extraSkillLocator;
-                var extraInputBank = extraBaseSkillState.extraInputBankTest;
+                var extraSkillLocator = extraBaseSkillState.ExtraSkillLocator;
+                var extraInputBank = extraBaseSkillState.ExtraInputBankTest;
                 
 
                 if (!extraSkillLocator || !extraInputBank)

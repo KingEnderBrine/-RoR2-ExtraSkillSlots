@@ -15,7 +15,7 @@ namespace ExtraSkillSlots
             c.GotoNext(
                 x => x.MatchLdarg(0),
                 x => x.MatchLdcR4(0),
-                x => x.MatchCallvirt(out var set_critHeal));
+                x => x.MatchCallOrCallvirt<CharacterBody>("set_critHeal"));
             c.Index++;
             
             c.Emit(OpCodes.Ldloc, 66);

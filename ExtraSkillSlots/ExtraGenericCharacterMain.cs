@@ -1,8 +1,6 @@
 ﻿using EntityStates;
-using R2API.Utils;
 using RoR2;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace ExtraSkillSlots
 {
@@ -13,8 +11,8 @@ namespace ExtraSkillSlots
         public bool extraSkill3InputReceived;
         public bool extraSkill4InputReceived;
 
-        public ExtraSkillLocator extraSkillLocator { get; private set; }
-        public ExtraInputBankTest extraInputBankTest { get; private set; }
+        public ExtraSkillLocator ExtraSkillLocator { get; private set; }
+        public ExtraInputBankTest ExtraInputBankTest { get; private set; }
 
         private static readonly Dictionary<GenericCharacterMain, ExtraGenericCharacterMain> instances = new Dictionary<GenericCharacterMain, ExtraGenericCharacterMain>();
 
@@ -24,8 +22,8 @@ namespace ExtraSkillSlots
         {
             return instances[genericCharacterMain] = new ExtraGenericCharacterMain
             {
-                extraSkillLocator = genericCharacterMain.outer.GetComponent<ExtraSkillLocator>(),
-                extraInputBankTest = genericCharacterMain.outer.GetComponent<ExtraInputBankTest>()
+                ExtraSkillLocator = genericCharacterMain.outer.GetComponent<ExtraSkillLocator>(),
+                ExtraInputBankTest = genericCharacterMain.outer.GetComponent<ExtraInputBankTest>()
             };
         }
 
@@ -54,8 +52,8 @@ namespace ExtraSkillSlots
 
             var extraGenericCharacterMain = Get(self);
 
-            var extraSkillLocator = extraGenericCharacterMain.extraSkillLocator;
-            var extraInputBankTest = extraGenericCharacterMain.extraInputBankTest;
+            var extraSkillLocator = extraGenericCharacterMain.ExtraSkillLocator;
+            var extraInputBankTest = extraGenericCharacterMain.ExtraInputBankTest;
 
             if (extraSkillLocator && extraInputBankTest && extraGenericCharacterMain != null)
             {
@@ -80,7 +78,7 @@ namespace ExtraSkillSlots
             orig(self);
 
             var extraGenericCharacterMain = Get(self);
-            var extraInputBankTest = extraGenericCharacterMain.extraInputBankTest;
+            var extraInputBankTest = extraGenericCharacterMain.ExtraInputBankTest;
             if (!extraInputBankTest || extraGenericCharacterMain == null)
             {
                 return;

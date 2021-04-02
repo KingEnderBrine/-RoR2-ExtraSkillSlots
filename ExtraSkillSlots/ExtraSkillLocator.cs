@@ -3,7 +3,6 @@ using MonoMod.Cil;
 using RoR2;
 using System;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace ExtraSkillSlots
 {
@@ -13,13 +12,9 @@ namespace ExtraSkillSlots
     [RequireComponent(typeof(SkillLocator))]
     public class ExtraSkillLocator : MonoBehaviour
     {
-        [FormerlySerializedAs("extraSkill1")]
         public GenericSkill extraFirst;
-        [FormerlySerializedAs("extraSkill2")]
         public GenericSkill extraSecond;
-        [FormerlySerializedAs("extraSkill3")]
         public GenericSkill extraThird;
-        [FormerlySerializedAs("extraSkill4")]
         public GenericSkill extraFourth;
 
         internal static GenericSkill GetSkillOverrideHook(On.RoR2.SkillLocator.orig_GetSkill orig, SkillLocator self, SkillSlot skillSlot)
@@ -81,46 +76,6 @@ namespace ExtraSkillSlots
             }
 
             return orig(self, skillComponent);
-        }
-
-        internal static void ApplyAmmoPackILHook(ILContext il)
-        {
-            var c = new ILCursor(il);
-
-            c.GotoNext(
-                x => x.MatchLdcI4(4),
-                x => x.MatchNewarr<GenericSkill>());
-            c.Next.OpCode = OpCodes.Ldarg_0;
-            c.Next.Operand = null;
-            c.GotoNext();
-
-            //Replacing skill array initialization with own
-            c.RemoveRange(21);
-            c.EmitDelegate<Func<SkillLocator, GenericSkill[]>>((self) =>
-            {
-                var extraSkillLocator = self.GetComponent<ExtraSkillLocator>();
-                if (extraSkillLocator)
-                {
-                    return new GenericSkill[]
-                    {
-                        self.primary,
-                        self.secondary,
-                        self.utility,
-                        self.special,
-                        extraSkillLocator.extraFirst,
-                        extraSkillLocator.extraSecond,
-                        extraSkillLocator.extraThird,
-                        extraSkillLocator.extraFourth,
-                    };
-                }
-                return new GenericSkill[]
-                    {
-                        self.primary,
-                        self.secondary,
-                        self.utility,
-                        self.special
-                    };
-            });
         }
     }
 }

@@ -1,24 +1,30 @@
 ﻿using BepInEx;
 using EntityStates;
 using MonoMod.RuntimeDetour;
-using R2API.Utils;
+using MonoMod.RuntimeDetour.HookGen;
 using Rewired.Data;
+using RoR2;
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
 
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
+[assembly: R2API.Utils.ManualNetworkRegistration]
+[assembly: EnigmaticThunder.Util.ManualNetworkRegistration]
 namespace ExtraSkillSlots
 {
-    [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [BepInDependency("com.KingEnderBrine.ScrollableLobbyUI")]
-    [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.KingEnderBrine.ExtraSkillSlots", "Extra Skill Slots", "1.2.2")]
+    [BepInPlugin(GUID, Name, Version)]
 
     public class ExtraSkillSlotsPlugin : BaseUnityPlugin
     {
+        public const string GUID = "com.KingEnderBrine.ExtraSkillSlots";
+        public const string Name = "Extra Skill Slots";
+        public const string Version = "1.3.0";
+
         private void Awake()
         {
             //Add actions to RoR2.InputCatalog
@@ -26,7 +32,7 @@ namespace ExtraSkillSlots
             
             //Hook to method with some rewired initialization (or not? Anyway it works) to add custom actions
             var userDataInit = typeof(UserData).GetMethod("KFIfLMJhIpfzcbhqEXHpaKpGsgeZ", BindingFlags.NonPublic | BindingFlags.Instance);
-            new Hook(userDataInit, (Action<Action<UserData>, UserData>)ExtraInputs.AddCustomActions);
+            HookEndpointManager.Add(userDataInit, (Action<Action<UserData>, UserData>)ExtraInputs.AddCustomActions);
 
             //Adding custom actions to Settings
             On.RoR2.UI.SettingsPanelController.Start += UIHooks.SettingsPanelControllerStart;
@@ -37,7 +43,6 @@ namespace ExtraSkillSlots
             //Applying overrides to SkillLocator to use extra skills
             On.RoR2.SkillLocator.GetSkill += ExtraSkillLocator.GetSkillOverrideHook;
             On.RoR2.SkillLocator.FindSkillSlot += ExtraSkillLocator.FindSkillSlotOverrideHook;
-            IL.RoR2.SkillLocator.ApplyAmmoPack += ExtraSkillLocator.ApplyAmmoPackILHook;
 
             //Adding custom InputBankTest
             On.RoR2.InputBankTest.Awake += (orig, self) =>
@@ -64,7 +69,7 @@ namespace ExtraSkillSlots
             On.EntityStates.GenericCharacterMain.GatherInputs += ExtraGenericCharacterMain.GatherInputsOverrideHook;
 
             //Applying override to BaseSkillState
-            IL.EntityStates.BaseSkillState.IsKeyDownAuthority += ExtraBaseSkillState.IsKeyDownAuthorityILHook;
+            IL.EntityStates.SkillStateMethods.IsKeyDownAuthority += ExtraBaseSkillState.IsKeyDownAuthorityILHook;
 
             On.EntityStates.BaseState.OnEnter += (orig, self) =>
             {
@@ -94,6 +99,11 @@ namespace ExtraSkillSlots
 
             //Fixing getting extra skill slots for UI
             IL.RoR2.UI.LoadoutPanelController.Row.FromSkillSlot += UIHooks.LoadoutPanelControllerFromSkillSlot;
+
+            On.RoR2.Language.LoadStrings += LanguageConsts.OnLoadStrings;
+
+            NetworkModCompatibilityHelper.networkModList = NetworkModCompatibilityHelper.networkModList.Append($"{GUID};{Version}");
+            RoR2Application.isModded = true;
         }
     }
 }

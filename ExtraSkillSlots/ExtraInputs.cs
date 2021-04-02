@@ -30,7 +30,7 @@ namespace ExtraSkillSlots
             var thirdAction = CreateInputAction(RewiredActions.ThirdExtraSkill, RewiredActions.ThirdExtraSkillName);
             var fourthAction = CreateInputAction(RewiredActions.FourthExtraSkill, RewiredActions.FourthExtraSkillName);
 
-            var actions = self.GetFieldValue<List<InputAction>>("actions");
+            var actions = typeof(UserData).GetField("actions", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(self) as List<InputAction>;
 
             actions?.Add(firstAction);
             actions?.Add(secondAction);
@@ -53,6 +53,11 @@ namespace ExtraSkillSlots
             action.SetFieldValue("_categoryId", 0);
 
             return action;
+        }
+
+        private static void SetFieldValue<T>(this T obj, string fieldName, object value)
+        {
+            typeof(T).GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance).SetValue(obj, value);
         }
     }
 }

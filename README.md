@@ -86,6 +86,9 @@ Feel free to ping me on discord `@KingEnderBrine` if you found one.
 
 ***
 # Changelog
+**1.3.0**
+
+* Remove r2api dependency
 
 **1.2.2**
 

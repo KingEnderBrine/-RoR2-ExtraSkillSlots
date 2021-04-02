@@ -10,7 +10,7 @@
   
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\CommonLibs\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\CommonLibs\Assembly-CSharp.refstub.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="BepInEx">
@@ -29,10 +29,6 @@
     </Reference>
     <Reference Include="MonoMod.Utils">
       <HintPath>..\..\CommonLibs\MonoMod.Utils.dll</HintPath>
-    </Reference>
-    <Reference Include="R2API">
-      <HintPath>..\..\CommonLibs\R2API.dll</HintPath>
-      <Private>false</Private>
     </Reference>
     <Reference Include="Rewired_Core">
       <HintPath>..\..\CommonLibs\Rewired_Core.dll</HintPath>
