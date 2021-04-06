@@ -19,10 +19,10 @@ namespace ExtraSkillSlots
             hud = GetComponent<HUD>();
             var skillsContainer = hud.transform.Find("MainContainer/MainUIArea/SpringCanvas/BottomRightCluster/Scaler");
 
-            extraSkillIconFirst = CopyUISkillSlot(1, RewiredActions.FirstExtraSkillName, skillsContainer);
-            extraSkillIconSecond = CopyUISkillSlot(2, RewiredActions.SecondExtraSkillName, skillsContainer);
-            extraSkillIconThird = CopyUISkillSlot(3, RewiredActions.ThirdExtraSkillName, skillsContainer);
-            extraSkillIconFourth = CopyUISkillSlot(4, RewiredActions.FourthExtraSkillName, skillsContainer);
+            extraSkillIconFirst = CopyUISkillSlot(1, RewiredAction.FirstExtraSkill.Name, skillsContainer);
+            extraSkillIconSecond = CopyUISkillSlot(2, RewiredAction.SecondExtraSkill.Name, skillsContainer);
+            extraSkillIconThird = CopyUISkillSlot(3, RewiredAction.ThirdExtraSkill.Name, skillsContainer);
+            extraSkillIconFourth = CopyUISkillSlot(4, RewiredAction.FourthExtraSkill.Name, skillsContainer);
         }
 
         internal static SkillIcon CopyUISkillSlot(int slot, string actionName, Transform skillsContainer)

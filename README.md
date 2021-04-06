@@ -1,7 +1,7 @@
 # For users
 It's utility mod and does almost nothing on its own.
 What you should know about it is that mod has key bindings for extra skills that must be assigned in settings.
-Here's, I think, the best key bindings:
+Here's, I think, the best key bindings (default, starting from 1.4.0):
 ![Keybingins](https://cdn.discordapp.com/attachments/706089456855154778/731500696800854036/Settings.jpg)
 ***
 # For developers
@@ -86,6 +86,10 @@ Feel free to ping me on discord `@KingEnderBrine` if you found one.
 
 ***
 # Changelog
+**1.4.0**
+
+* Added default keybindings.
+
 **1.3.2**
 
 * Fixed an issue when starting a run hud would not show up.

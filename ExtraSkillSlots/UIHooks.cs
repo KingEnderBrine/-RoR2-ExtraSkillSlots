@@ -25,10 +25,10 @@ namespace ExtraSkillSlots
             {
                 var jumpBindingTransform = self.transform.Find("Scroll View/Viewport/VerticalLayout/SettingsEntryButton, Binding (Jump)");
 
-                AddActionBindingToSettings(RewiredActions.FirstExtraSkillName, jumpBindingTransform);
-                AddActionBindingToSettings(RewiredActions.SecondExtraSkillName, jumpBindingTransform);
-                AddActionBindingToSettings(RewiredActions.ThirdExtraSkillName, jumpBindingTransform);
-                AddActionBindingToSettings(RewiredActions.FourthExtraSkillName, jumpBindingTransform);
+                AddActionBindingToSettings(RewiredAction.FirstExtraSkill.Name, jumpBindingTransform);
+                AddActionBindingToSettings(RewiredAction.SecondExtraSkill.Name, jumpBindingTransform);
+                AddActionBindingToSettings(RewiredAction.ThirdExtraSkill.Name, jumpBindingTransform);
+                AddActionBindingToSettings(RewiredAction.FourthExtraSkill.Name, jumpBindingTransform);
             }
         }
 

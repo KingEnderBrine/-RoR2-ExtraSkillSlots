@@ -32,7 +32,7 @@
       <HintPath>..\..\CommonLibs\MonoMod.Utils.dll</HintPath>
     </Reference>
     <Reference Include="Rewired_Core">
-      <HintPath>..\..\CommonLibs\Rewired_Core.dll</HintPath>
+      <HintPath>..\..\CommonLibs\Rewired_Core.refstub.dll</HintPath>
     </Reference>
     <Reference Include="Rewired_CSharp">
       <HintPath>..\..\CommonLibs\Rewired_CSharp.dll</HintPath>

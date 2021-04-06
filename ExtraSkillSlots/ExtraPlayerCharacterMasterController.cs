@@ -28,10 +28,10 @@ namespace ExtraSkillSlots
 
             if (PlayerCharacterMasterController.CanSendBodyInput(playerCharacterMasterController.networkUser, out _, out var inputPlayer, out _))
             {
-                skill1State = inputPlayer.GetButton(RewiredActions.FirstExtraSkill);
-                skill2State = inputPlayer.GetButton(RewiredActions.SecondExtraSkill);
-                skill3State = inputPlayer.GetButton(RewiredActions.ThirdExtraSkill);
-                skill4State = inputPlayer.GetButton(RewiredActions.FourthExtraSkill);
+                skill1State = inputPlayer.GetButton(RewiredAction.FirstExtraSkill.ActionId);
+                skill2State = inputPlayer.GetButton(RewiredAction.SecondExtraSkill.ActionId);
+                skill3State = inputPlayer.GetButton(RewiredAction.ThirdExtraSkill.ActionId);
+                skill4State = inputPlayer.GetButton(RewiredAction.FourthExtraSkill.ActionId);
             }
 
             extraInputBankTest.extraSkill1.PushState(skill1State);

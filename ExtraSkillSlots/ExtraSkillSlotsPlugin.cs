@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Logging;
 using MonoMod.RuntimeDetour;
 using MonoMod.RuntimeDetour.HookGen;
 using Rewired.Data;
@@ -22,20 +23,29 @@ namespace ExtraSkillSlots
     {
         public const string GUID = "com.KingEnderBrine.ExtraSkillSlots";
         public const string Name = "Extra Skill Slots";
-        public const string Version = "1.3.2";
+        public const string Version = "1.4.0";
+
+        internal static ExtraSkillSlotsPlugin Instance { get; private set; }
+        internal static ManualLogSource InstanceLogger => Instance?.Logger;
 
         private void Awake()
         {
+            Instance = this;
+
             //Add actions to RoR2.InputCatalog
             ExtraInputs.AddActionsToInputCatalog();
             
             //Hook to method with some rewired initialization (or not? Anyway it works) to add custom actions
-            var userDataInit = typeof(UserData).GetMethod("KFIfLMJhIpfzcbhqEXHpaKpGsgeZ", BindingFlags.NonPublic | BindingFlags.Instance);
+            var userDataInit = typeof(UserData).GetMethod(nameof(UserData.KFIfLMJhIpfzcbhqEXHpaKpGsgeZ), BindingFlags.NonPublic | BindingFlags.Instance);
             HookEndpointManager.Add(userDataInit, (Action<Action<UserData>, UserData>)ExtraInputs.AddCustomActions);
+
+            //Adding default keybindings
+            On.RoR2.UserProfile.LoadDefaultProfile += ExtraInputs.OnLoadDefaultProfile;
+            On.RoR2.UserProfile.LoadUserProfiles += ExtraInputs.OnLoadUserProfiles;
 
             //Adding custom actions to Settings
             On.RoR2.UI.SettingsPanelController.Start += UIHooks.SettingsPanelControllerStart;
-
+            
             //Adding custom skill slots to HUD
             On.RoR2.UI.HUD.Awake += UIHooks.HUDAwake;
 
