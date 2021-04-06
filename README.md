@@ -88,7 +88,7 @@ Feel free to ping me on discord `@KingEnderBrine` if you found one.
 # Changelog
 **1.4.0**
 
-* Added default keybindings.
+* Added default keybindings. Thanks to `DrBibop` for code example.
 
 **1.3.2**
 
