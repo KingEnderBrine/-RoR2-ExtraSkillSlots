@@ -1,9 +1,11 @@
 ﻿using Rewired;
 using Rewired.Data;
+using Rewired.Data.Mapping;
 using RoR2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace ExtraSkillSlots
 {
@@ -23,6 +25,14 @@ namespace ExtraSkillSlots
             self.actions?.Add(RewiredAction.SecondExtraSkill);
             self.actions?.Add(RewiredAction.ThirdExtraSkill);
             self.actions?.Add(RewiredAction.FourthExtraSkill);
+
+            var joystickMap = self.joystickMaps?.FirstOrDefault();
+            var keyboardMap = self.keyboardMaps?.FirstOrDefault();
+
+            FillActionMaps(RewiredAction.FirstExtraSkill, keyboardMap, joystickMap);
+            FillActionMaps(RewiredAction.SecondExtraSkill, keyboardMap, joystickMap);
+            FillActionMaps(RewiredAction.ThirdExtraSkill, keyboardMap, joystickMap);
+            FillActionMaps(RewiredAction.FourthExtraSkill, keyboardMap, joystickMap);
 
             orig(self);
         }
@@ -69,16 +79,29 @@ namespace ExtraSkillSlots
             AddActionMaps(RewiredAction.FourthExtraSkill, userProfile);
         }
 
+        private static void FillActionMaps(RewiredAction action, ControllerMap_Editor keyboardMap, ControllerMap_Editor joystickMap)
+        {
+            if (joystickMap != null && joystickMap.actionElementMaps.All(map => map.actionId != action.ActionId))
+            {
+                joystickMap.actionElementMaps.Add(action.DefaultJoystickMap);
+            }
+
+            if (keyboardMap != null && keyboardMap.actionElementMaps.All(map => map.actionId != action.ActionId))
+            {
+                keyboardMap.actionElementMaps.Add(action.DefaultKeyboardMap);
+            }
+        }
+
         private static void AddActionMaps(RewiredAction action, UserProfile userProfile)
         {
             if (userProfile.joystickMap.AllMaps.All(map => map.actionId != action.ActionId))
             {
-                userProfile.joystickMap.AddElementMap(new ActionElementMap(action.ActionId, ControllerElementType.Button, action.DefaultJoystickKey, Pole.Positive, AxisRange.Full));
+                userProfile.joystickMap.AddElementMap(action.DefaultJoystickMap);
             }
 
             if (userProfile.keyboardMap.AllMaps.All(map => map.actionId != action.ActionId))
             {
-                userProfile.keyboardMap.AddElementMap(new ActionElementMap(action.ActionId, ControllerElementType.Button, Pole.Positive, action.DefaultKeyboardKey, ModifierKey.None, ModifierKey.None, ModifierKey.None));
+                userProfile.keyboardMap.AddElementMap(action.DefaultKeyboardMap);
             }
         }
 

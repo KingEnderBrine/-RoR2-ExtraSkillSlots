@@ -3,7 +3,7 @@ It's utility mod and does almost nothing on its own.
 What you should know about it is that mod has key bindings for extra skills that must be assigned in settings.
 Here's, I think, the best key bindings (default, starting from 1.4.0):
 ![Keybingins](https://cdn.discordapp.com/attachments/706089456855154778/731500696800854036/Settings.jpg)
-***
+
 # For developers
 #### TL; DR;
 Adding extra skill is almost the same as adding normal skills.
@@ -18,7 +18,7 @@ extraSkillLocator.extraThird = thirdExtraSkill;
 extraSkillLocator.extraFourth = fourthExtraSkill;
 ```
 That's all it takes for adding simple skills.
-***
+
 #### Full documentation
 All defined classes extend corresponding classes from RoR2. Class naming follows one pattern: `Extra{NameOfRoR2Class}.`
 
@@ -80,12 +80,18 @@ var extraSkillLocator = myCharacterPrefab.AddComponent<ExtraSkillLocator>();
 //Assigning our skill to corresponding slot
 extraSkillLocator.extraFirst = firstExtraSkill;
 ```
-***
+
 # Bugs
 Feel free to ping me on discord `@KingEnderBrine` if you found one.
 
-***
+
+If you want to support me, [you can do this here](https://www.buymeacoffee.com/KingEnderBrine)
+
 # Changelog
+**1.4.1**
+
+* Minor fix for default keybindings.
+
 **1.4.0**
 
 * Added default keybindings. Thanks to `DrBibop` for code example.

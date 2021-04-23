@@ -18,6 +18,13 @@ namespace ExtraSkillSlots
 
         private InputAction inputAction;
 
+        private ActionElementMap _defaultJoystickMap;
+        public ActionElementMap DefaultJoystickMap { get => _defaultJoystickMap ??= new ActionElementMap(ActionId, ControllerElementType.Button, DefaultJoystickKey, Pole.Positive, AxisRange.Full); }
+
+        private ActionElementMap _defaultKeyboardMap;
+        public ActionElementMap DefaultKeyboardMap { get => _defaultKeyboardMap ??= new ActionElementMap(ActionId, ControllerElementType.Button, -1) { keyboardKeyCode = DefaultKeyboardKey }; }
+
+
         static RewiredAction()
         {
             FirstExtraSkill = new RewiredAction
