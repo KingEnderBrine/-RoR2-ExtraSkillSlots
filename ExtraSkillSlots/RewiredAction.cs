@@ -22,7 +22,7 @@ namespace ExtraSkillSlots
         public ActionElementMap DefaultJoystickMap { get => _defaultJoystickMap ??= new ActionElementMap(ActionId, ControllerElementType.Button, DefaultJoystickKey, Pole.Positive, AxisRange.Full); }
 
         private ActionElementMap _defaultKeyboardMap;
-        public ActionElementMap DefaultKeyboardMap { get => _defaultKeyboardMap ??= new ActionElementMap(ActionId, ControllerElementType.Button, -1) { keyboardKeyCode = DefaultKeyboardKey }; }
+        public ActionElementMap DefaultKeyboardMap { get => _defaultKeyboardMap ??= new ActionElementMap(ActionId, ControllerElementType.Button, (int)DefaultKeyboardKey - 21) { _keyboardKeyCode = DefaultKeyboardKey }; }
 
 
         static RewiredAction()

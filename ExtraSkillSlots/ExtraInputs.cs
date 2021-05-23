@@ -28,7 +28,7 @@ namespace ExtraSkillSlots
 
             var joystickMap = self.joystickMaps?.FirstOrDefault();
             var keyboardMap = self.keyboardMaps?.FirstOrDefault();
-
+            
             FillActionMaps(RewiredAction.FirstExtraSkill, keyboardMap, joystickMap);
             FillActionMaps(RewiredAction.SecondExtraSkill, keyboardMap, joystickMap);
             FillActionMaps(RewiredAction.ThirdExtraSkill, keyboardMap, joystickMap);
@@ -97,11 +97,13 @@ namespace ExtraSkillSlots
             if (userProfile.joystickMap.AllMaps.All(map => map.actionId != action.ActionId))
             {
                 userProfile.joystickMap.AddElementMap(action.DefaultJoystickMap);
+                action.DefaultJoystickMap.GPKKIyqEPFnzbZebduZEdqINbaj(userProfile.joystickMap);
             }
 
             if (userProfile.keyboardMap.AllMaps.All(map => map.actionId != action.ActionId))
             {
                 userProfile.keyboardMap.AddElementMap(action.DefaultKeyboardMap);
+                action.DefaultKeyboardMap.GPKKIyqEPFnzbZebduZEdqINbaj(userProfile.keyboardMap);
             }
         }
 

@@ -12,8 +12,6 @@ using System.Security.Permissions;
 
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
-[assembly: R2API.Utils.ManualNetworkRegistration]
-[assembly: EnigmaticThunder.Util.ManualNetworkRegistration]
 namespace ExtraSkillSlots
 {
     [BepInDependency("com.KingEnderBrine.ScrollableLobbyUI")]
@@ -23,7 +21,7 @@ namespace ExtraSkillSlots
     {
         public const string GUID = "com.KingEnderBrine.ExtraSkillSlots";
         public const string Name = "Extra Skill Slots";
-        public const string Version = "1.4.1";
+        public const string Version = "1.4.2";
 
         internal static ExtraSkillSlotsPlugin Instance { get; private set; }
         internal static ManualLogSource InstanceLogger => Instance?.Logger;
