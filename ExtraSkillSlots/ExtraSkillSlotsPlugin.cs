@@ -16,12 +16,11 @@ namespace ExtraSkillSlots
 {
     [BepInDependency("com.KingEnderBrine.ScrollableLobbyUI")]
     [BepInPlugin(GUID, Name, Version)]
-
     public class ExtraSkillSlotsPlugin : BaseUnityPlugin
     {
         public const string GUID = "com.KingEnderBrine.ExtraSkillSlots";
         public const string Name = "Extra Skill Slots";
-        public const string Version = "1.4.2";
+        public const string Version = "1.4.4";
 
         internal static ExtraSkillSlotsPlugin Instance { get; private set; }
         internal static ManualLogSource InstanceLogger => Instance?.Logger;

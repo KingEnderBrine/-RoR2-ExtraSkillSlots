@@ -13,20 +13,15 @@ namespace ExtraSkillSlots
             var cooldownScaleIndex = -1;
             var flatCooldownReductionIndex = -1;
 
-            c.GotoNext(
-                x => x.MatchLdfld<SkillLocator>(nameof(SkillLocator.primary)));
-            c.GotoNext(
-                x => x.MatchLdloc(out cooldownScaleIndex),
-                x => x.MatchCallOrCallvirt<GenericSkill>("set_cooldownScale"));
-            c.GotoNext(
-                x => x.MatchLdloc(out flatCooldownReductionIndex),
-                x => x.MatchCallOrCallvirt<GenericSkill>("set_flatCooldownReduction"));
+            c.GotoNext(x => x.MatchLdfld<SkillLocator>(nameof(SkillLocator.primary)));
+            
+            c.GotoNext(x => x.MatchCallOrCallvirt<GenericSkill>("set_cooldownScale"));
+            c.GotoPrev(x => x.MatchLdloc(out cooldownScaleIndex));
+            
+            c.GotoNext(x => x.MatchCallOrCallvirt<GenericSkill>("set_flatCooldownReduction"));
+            c.GotoPrev(x => x.MatchLdloc(out flatCooldownReductionIndex));
 
-            c.GotoNext(
-                MoveType.After,
-                x => x.MatchLdarg(0),
-                x => x.MatchLdcR4(0),
-                x => x.MatchCallOrCallvirt<CharacterBody>("set_critHeal"));
+            c.GotoNext(MoveType.Before, x => x.MatchRet());
             
             c.Emit(OpCodes.Ldarg_0);
             c.Emit(OpCodes.Ldloc, cooldownScaleIndex);
