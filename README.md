@@ -88,6 +88,10 @@ Feel free to ping me on discord `@KingEnderBrine` if you found one.
 If you want to support me, [you can do this here](https://www.buymeacoffee.com/KingEnderBrine)
 
 # Changelog
+**1.4.5**
+
+* Fixed vanilla bug that was causing `ExtendedLoadout` break for Captain
+
 **1.4.4**
 
 * Fixed compatibility with R2API 3.0.71
