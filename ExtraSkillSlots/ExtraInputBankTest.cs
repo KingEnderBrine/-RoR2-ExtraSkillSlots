@@ -19,8 +19,11 @@ namespace ExtraSkillSlots
                 return true;
             }
             var extraInputBankTest = self.GetComponent<ExtraInputBankTest>();
-
-            return 
+            if (!extraInputBankTest)
+            {
+                return false;
+            }
+            return
                 extraInputBankTest.extraSkill1.down ||
                 extraInputBankTest.extraSkill2.down ||
                 extraInputBankTest.extraSkill3.down ||

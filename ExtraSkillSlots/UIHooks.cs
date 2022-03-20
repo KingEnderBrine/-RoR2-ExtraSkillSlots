@@ -47,6 +47,22 @@ namespace ExtraSkillSlots
         {
             var c = new ILCursor(il);
 
+            int skillSlotIndex = -1;
+            int titleTokenIndex = -1;
+            int addWIPIconsIndex = -1;
+
+            c.GotoNext(
+                x => x.MatchCallOrCallvirt<SkillLocator>(nameof(SkillLocator.FindSkillSlot)),
+                x => x.MatchStloc(out skillSlotIndex));
+
+            c.GotoNext(
+                x => x.MatchLdstr(out _),
+                x => x.MatchStloc(out titleTokenIndex));
+
+            c.GotoNext(
+                x => x.MatchLdcI4(out _),
+                x => x.MatchStloc(out addWIPIconsIndex));
+
             c.GotoNext(
                 x => x.MatchNewobj<ArgumentOutOfRangeException>(),
                 x => x.MatchThrow());
@@ -57,11 +73,11 @@ namespace ExtraSkillSlots
             c.Previous.OpCode = OpCodes.Nop;
             c.Previous.Operand = null;
 
-            c.Emit(OpCodes.Ldloc, 4);
+            c.Emit(OpCodes.Ldloc, skillSlotIndex);
             c.Emit(OpCodes.Call, typeof(UIHooks).GetMethod(nameof(GetSkillSlotName), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static));
-            c.Emit(OpCodes.Stloc, 2);
+            c.Emit(OpCodes.Stloc, titleTokenIndex);
             c.Emit(OpCodes.Ldc_I4_0);
-            c.Emit(OpCodes.Stloc, 3);
+            c.Emit(OpCodes.Stloc, addWIPIconsIndex);
         }
 
         private static string GetSkillSlotName(SkillSlot skillSlot)
@@ -74,48 +90,6 @@ namespace ExtraSkillSlots
                 ExtraSkillSlot.ExtraFourth => LanguageConsts.EXTRA_SKILL_SLOTS_FOURTH_EXTRA_SKILL,
                 _ => throw new ArgumentOutOfRangeException()
             };
-        }
-
-        internal static void CharacterSelectControllerRebuildLocal(ILContext il)
-        {
-            var c = new ILCursor(il);
-            var arrayIndex = -1;
-            var elementIndex = -1;
-            var indexIndex = -1;
-            var removeFromIndex = -1;
-            var removeCount = -1;
-            var arrayElementUsageIndex = -1;
-            Instruction loopEndInstuction = null;
-
-            //Removing Where call because we will filter inside the loop instead
-            c.GotoNext(MoveType.After, x => x.MatchCallOrCallvirt(typeof(GameObject).GetMethod(nameof(GameObject.GetComponents), Array.Empty<Type>()).MakeGenericMethod(new[] { typeof(GenericSkill) })));
-            removeFromIndex = c.Index;
-            c.GotoNext(x => x.MatchStloc(out arrayIndex));
-            removeCount = c.Index - removeFromIndex;
-            c.Index = removeFromIndex;
-            c.RemoveRange(removeCount);
-
-            //Find storing of an array element to a local variable
-            c.GotoNext(MoveType.After,
-                x => x.MatchLdloc(arrayIndex),
-                x => x.MatchLdloc(out indexIndex),
-                x => x.MatchLdelemRef(),
-                x => x.MatchStloc(out elementIndex));
-            arrayElementUsageIndex = c.Index;
-
-            //Find loop end to go to it when our condition is true
-            c.GotoNext(
-                x => x.MatchLdloc(indexIndex),
-                x => x.MatchLdcI4(1),
-                x => x.MatchAdd(),
-                x => x.MatchStloc(indexIndex));
-            loopEndInstuction = c.Next;
-            c.Index = arrayElementUsageIndex;
-
-            //Emit condition that was in Where
-            c.Emit(OpCodes.Ldloc, elementIndex);
-            c.Emit(OpCodes.Ldfld, typeof(GenericSkill).GetField(nameof(GenericSkill.hideInCharacterSelect)));
-            c.Emit(OpCodes.Brtrue, loopEndInstuction);
         }
     }
 }

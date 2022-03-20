@@ -1,17 +1,16 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
-using MonoMod.RuntimeDetour;
 using MonoMod.RuntimeDetour.HookGen;
 using Rewired.Data;
 using RoR2;
-using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security;
 using System.Security.Permissions;
 
-[module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
+[assembly: AssemblyVersion(ExtraSkillSlots.ExtraSkillSlotsPlugin.Version)]
 namespace ExtraSkillSlots
 {
     [BepInDependency("com.KingEnderBrine.ScrollableLobbyUI")]
@@ -20,12 +19,12 @@ namespace ExtraSkillSlots
     {
         public const string GUID = "com.KingEnderBrine.ExtraSkillSlots";
         public const string Name = "Extra Skill Slots";
-        public const string Version = "1.4.5";
+        public const string Version = "1.5.0";
 
         internal static ExtraSkillSlotsPlugin Instance { get; private set; }
         internal static ManualLogSource InstanceLogger => Instance?.Logger;
 
-        private void Awake()
+        private void Start()
         {
             Instance = this;
 
@@ -33,12 +32,12 @@ namespace ExtraSkillSlots
             ExtraInputs.AddActionsToInputCatalog();
             
             //Hook to method with some rewired initialization (or not? Anyway it works) to add custom actions
-            var userDataInit = typeof(UserData).GetMethod(nameof(UserData.KFIfLMJhIpfzcbhqEXHpaKpGsgeZ), BindingFlags.NonPublic | BindingFlags.Instance);
-            HookEndpointManager.Add(userDataInit, (Action<Action<UserData>, UserData>)ExtraInputs.AddCustomActions);
+            var userDataInit = typeof(UserData).GetMethod(nameof(UserData.wVZZKoPFwEvodLvLcYNvVAPKpUj), BindingFlags.NonPublic | BindingFlags.Instance);
+            HookEndpointManager.Add(userDataInit, ExtraInputs.AddCustomActions);
 
             //Adding default keybindings
             On.RoR2.UserProfile.LoadDefaultProfile += ExtraInputs.OnLoadDefaultProfile;
-            On.RoR2.UserProfile.LoadUserProfiles += ExtraInputs.OnLoadUserProfiles;
+            On.RoR2.SaveSystem.LoadUserProfiles += ExtraInputs.OnLoadUserProfiles;
 
             //Adding custom actions to Settings
             On.RoR2.UI.SettingsPanelController.Start += UIHooks.SettingsPanelControllerStart;
@@ -69,13 +68,29 @@ namespace ExtraSkillSlots
             //Fixing getting extra skill slots for UI
             IL.RoR2.UI.LoadoutPanelController.Row.FromSkillSlot += UIHooks.LoadoutPanelControllerFromSkillSlot;
 
-            //Fixing vanilla bug, remove if/when it will be fixed
-            IL.RoR2.UI.CharacterSelectController.RebuildLocal += UIHooks.CharacterSelectControllerRebuildLocal;
-
-            On.RoR2.Language.LoadStrings += LanguageConsts.OnLoadStrings;
+#warning Fix for language, remove when next update is out
+            if (RoR2Application.GetBuildId() == "1.2.2.0")
+            {
+                On.RoR2.Language.SetFolders += LanguageSetFolders;
+            }
+            else
+            {
+                Language.collectLanguageRootFolders += CollectLanguageRootFolders;
+            }
 
             NetworkModCompatibilityHelper.networkModList = NetworkModCompatibilityHelper.networkModList.Append($"{GUID};{Version}");
-            RoR2Application.isModded = true;
+        }
+
+        private void CollectLanguageRootFolders(List<string> folders)
+        {
+            folders.Add(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Info.Location), "Language"));
+        }
+
+#warning Fix for language, remove when next update is out
+        private void LanguageSetFolders(On.RoR2.Language.orig_SetFolders orig, Language self, IEnumerable<string> newFolders)
+        {
+            var dirs = Directory.EnumerateDirectories(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Info.Location), "Language"), self.name);
+            orig(self, newFolders.Union(dirs));
         }
     }
 }

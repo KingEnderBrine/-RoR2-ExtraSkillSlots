@@ -3,60 +3,54 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>preview</LangVersion>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
   </PropertyGroup>
-  
+
   <ItemGroup>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\CommonLibs\Assembly-CSharp.refstub.dll</HintPath>
+    <PackageReference Include="BepInEx.Analyzers" Version="1.0.*">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="BepInEx.Core" Version="5.4.19" />
+    <PackageReference Include="RiskOfRain2.GameLibs" Version="1.2.2-r.0" />
+    <PackageReference Include="UnityEngine.Modules" Version="2019.4.26" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="MMHOOK_RoR2">
+      <HintPath>..\Libs\MMHOOK_RoR2.dll</HintPath>
       <Private>false</Private>
-    </Reference>
-    <Reference Include="BepInEx">
-      <HintPath>..\..\CommonLibs\BepInEx.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="MMHOOK_Assembly-CSharp">
-      <HintPath>..\..\CommonLibs\MMHOOK_Assembly-CSharp.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="Mono.Cecil">
-      <HintPath>..\..\CommonLibs\Mono.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="MonoMod.RuntimeDetour">
-      <HintPath>..\..\CommonLibs\MonoMod.RuntimeDetour.dll</HintPath>
-    </Reference>
-    <Reference Include="MonoMod.Utils">
-      <HintPath>..\..\CommonLibs\MonoMod.Utils.dll</HintPath>
-    </Reference>
-    <Reference Include="Rewired_Core">
-      <HintPath>..\..\CommonLibs\Rewired_Core.refstub.dll</HintPath>
-    </Reference>
-    <Reference Include="Rewired_CSharp">
-      <HintPath>..\..\CommonLibs\Rewired_CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.TextMeshPro">
-      <HintPath>..\..\CommonLibs\Unity.TextMeshPro.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>..\..\CommonLibs\UnityEngine.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\CommonLibs\UnityEngine.CoreModule.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.Networking">
-      <HintPath>..\..\CommonLibs\UnityEngine.Networking.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>..\..\CommonLibs\UnityEngine.TextRenderingModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\CommonLibs\UnityEngine.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UIModule">
-      <HintPath>..\..\CommonLibs\UnityEngine.UIModule.dll</HintPath>
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="LanguageConsts.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>LanguageConsts.cs</LastGenOutput>
+    </None>
+    <None Update="Language\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="LanguageConsts.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>LanguageConsts.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <Target Name="UpdateVerison" AfterTargets="AfterBuild">
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
+    </GetAssemblyIdentity>
+    <Exec Condition="'$(OS)' == 'Windows_NT'" Command="powershell -Command &quot;(gc ../thunderstore.toml) -replace '(versionNumber\s*=\s*)\&quot;.*?\&quot;', '$1\&quot;$([System.Version]::Parse(%(AssemblyInfo.Version)).ToString(3))\&quot;' | Out-File ../thunderstore.toml&quot;" />
+    <Exec Condition="'$(OS)' == 'Unix'" Command="sed -i -E &quot;s/(versionNumber\s*=\s*)\&quot;.*?\&quot;/\1\&quot;$([System.Version]::Parse(%(AssemblyInfo.Version)).ToString(3))\&quot;/&quot; ../thunderstore.toml" />
+  </Target>
 </Project>

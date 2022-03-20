@@ -37,16 +37,16 @@ namespace ExtraSkillSlots
             orig(self);
         }
 
-        internal static void OnLoadUserProfiles(On.RoR2.UserProfile.orig_LoadUserProfiles orig)
+        internal static void OnLoadUserProfiles(On.RoR2.SaveSystem.orig_LoadUserProfiles orig, SaveSystem self)
         {
-            orig();
+            orig(self);
 
-            foreach (var (name, userProfile) in UserProfile.loadedUserProfiles)
+            foreach (var (name, userProfile) in self.loadedUserProfiles)
             {
                 try
                 {
                     AddMissingBingings(userProfile);
-                    userProfile.RequestSave();
+                    userProfile.RequestEventualSave();
                 }
                 catch(Exception e)
                 {
@@ -96,15 +96,17 @@ namespace ExtraSkillSlots
         {
             if (userProfile.joystickMap.AllMaps.All(map => map.actionId != action.ActionId))
             {
-                userProfile.joystickMap.AddElementMap(action.DefaultJoystickMap);
-                action.DefaultJoystickMap.GPKKIyqEPFnzbZebduZEdqINbaj(userProfile.joystickMap);
+                userProfile.joystickMap.CreateElementMap(action.DefaultJoystickMap.actionId, action.DefaultJoystickMap.axisContribution, action.DefaultJoystickMap.elementIdentifierId, action.DefaultJoystickMap.elementType, action.DefaultJoystickMap.axisRange, action.DefaultJoystickMap.invert);
+                action.DefaultJoystickMap.cNRtEejHCWUdzrhmpthsuslcVcs(userProfile.joystickMap);
             }
 
             if (userProfile.keyboardMap.AllMaps.All(map => map.actionId != action.ActionId))
             {
-                userProfile.keyboardMap.AddElementMap(action.DefaultKeyboardMap);
-                action.DefaultKeyboardMap.GPKKIyqEPFnzbZebduZEdqINbaj(userProfile.keyboardMap);
+                userProfile.keyboardMap.CreateElementMap(action.DefaultKeyboardMap.actionId, action.DefaultKeyboardMap.axisContribution, action.DefaultKeyboardMap.elementIdentifierId, action.DefaultJoystickMap.elementType, action.DefaultJoystickMap.axisRange, action.DefaultJoystickMap.invert, out var resultMap);
+                resultMap._keyboardKeyCode = action.DefaultKeyboardKey;
+                action.DefaultKeyboardMap.cNRtEejHCWUdzrhmpthsuslcVcs(userProfile.keyboardMap);
             }
+        
         }
 
         private static void Deconstruct<TKey, TValue>(this KeyValuePair<TKey, TValue> pair, out TKey key, out TValue value)
