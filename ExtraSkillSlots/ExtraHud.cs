@@ -17,17 +17,17 @@ namespace ExtraSkillSlots
         private void Awake()
         {
             hud = GetComponent<HUD>();
-            var skillsContainer = hud.transform.Find("MainContainer/MainUIArea/SpringCanvas/BottomRightCluster/Scaler");
+            var skillsContainer = hud.skillIcons;
 
-            extraSkillIconFirst = CopyUISkillSlot(1, RewiredAction.FirstExtraSkill.Name, skillsContainer);
-            extraSkillIconSecond = CopyUISkillSlot(2, RewiredAction.SecondExtraSkill.Name, skillsContainer);
-            extraSkillIconThird = CopyUISkillSlot(3, RewiredAction.ThirdExtraSkill.Name, skillsContainer);
-            extraSkillIconFourth = CopyUISkillSlot(4, RewiredAction.FourthExtraSkill.Name, skillsContainer);
+            extraSkillIconFirst = CopyUISkillSlot(RewiredAction.FirstExtraSkill.Name, skillsContainer[0]);
+            extraSkillIconSecond = CopyUISkillSlot(RewiredAction.SecondExtraSkill.Name, skillsContainer[1]);
+            extraSkillIconThird = CopyUISkillSlot(RewiredAction.ThirdExtraSkill.Name, skillsContainer[2]);
+            extraSkillIconFourth = CopyUISkillSlot(RewiredAction.FourthExtraSkill.Name, skillsContainer[3]);
         }
 
-        internal static SkillIcon CopyUISkillSlot(int slot, string actionName, Transform skillsContainer)
+        internal static SkillIcon CopyUISkillSlot(string actionName, SkillIcon skillsContainer)
         {
-            var skill = skillsContainer.Find($"Skill{slot}Root");
+            var skill = skillsContainer.gameObject.transform;
             var skillCopy = Instantiate(skill, skill.parent);
 
             //Lift up copy
@@ -36,8 +36,7 @@ namespace ExtraSkillSlots
             skillCopyRectTransform.anchorMax = new Vector2(1, 2.5F);
 
             //Changing visual input binding
-            var skillKeyText = skillCopy.Find("SkillBackgroundPanel/SkillKeyText");
-            var inputBindingDisplayController = skillKeyText.GetComponent<InputBindingDisplayController>();
+            var inputBindingDisplayController = skillCopy.GetComponentInChildren<InputBindingDisplayController>();
             inputBindingDisplayController.actionName = actionName;
 
             return skillCopy.GetComponent<SkillIcon>();
