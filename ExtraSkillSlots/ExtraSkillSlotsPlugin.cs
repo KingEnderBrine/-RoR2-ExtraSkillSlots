@@ -4,7 +4,6 @@ using MonoMod.RuntimeDetour.HookGen;
 using Rewired.Data;
 using RoR2;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Permissions;
@@ -19,7 +18,7 @@ namespace ExtraSkillSlots
     {
         public const string GUID = "com.KingEnderBrine.ExtraSkillSlots";
         public const string Name = "Extra Skill Slots";
-        public const string Version = "1.5.0";
+        public const string Version = "1.5.1";
 
         internal static ExtraSkillSlotsPlugin Instance { get; private set; }
         internal static ManualLogSource InstanceLogger => Instance?.Logger;
@@ -68,15 +67,7 @@ namespace ExtraSkillSlots
             //Fixing getting extra skill slots for UI
             IL.RoR2.UI.LoadoutPanelController.Row.FromSkillSlot += UIHooks.LoadoutPanelControllerFromSkillSlot;
 
-#warning Fix for language, remove when next update is out
-            if (RoR2Application.GetBuildId() == "1.2.2.0")
-            {
-                On.RoR2.Language.SetFolders += LanguageSetFolders;
-            }
-            else
-            {
-                Language.collectLanguageRootFolders += CollectLanguageRootFolders;
-            }
+            Language.collectLanguageRootFolders += CollectLanguageRootFolders;
 
             NetworkModCompatibilityHelper.networkModList = NetworkModCompatibilityHelper.networkModList.Append($"{GUID};{Version}");
         }
@@ -84,13 +75,6 @@ namespace ExtraSkillSlots
         private void CollectLanguageRootFolders(List<string> folders)
         {
             folders.Add(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Info.Location), "Language"));
-        }
-
-#warning Fix for language, remove when next update is out
-        private void LanguageSetFolders(On.RoR2.Language.orig_SetFolders orig, Language self, IEnumerable<string> newFolders)
-        {
-            var dirs = Directory.EnumerateDirectories(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Info.Location), "Language"), self.name);
-            orig(self, newFolders.Union(dirs));
         }
     }
 }
