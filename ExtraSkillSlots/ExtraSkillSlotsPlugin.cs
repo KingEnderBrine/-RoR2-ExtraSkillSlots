@@ -1,4 +1,5 @@
-﻿using BepInEx;
+﻿using System;
+using BepInEx;
 using BepInEx.Logging;
 using MonoMod.RuntimeDetour.HookGen;
 using Rewired.Data;
@@ -31,7 +32,7 @@ namespace ExtraSkillSlots
             ExtraInputs.AddActionsToInputCatalog();
             
             //Hook to method with some rewired initialization (or not? Anyway it works) to add custom actions
-            var userDataInit = typeof(UserData).GetMethod(nameof(UserData.wVZZKoPFwEvodLvLcYNvVAPKpUj), BindingFlags.NonPublic | BindingFlags.Instance);
+            var userDataInit = typeof(UserData).GetMethod(nameof(UserData.gLOOAxUFAvrvUufkVjaYyZoeLbLE), BindingFlags.NonPublic | BindingFlags.Instance);
             HookEndpointManager.Add(userDataInit, ExtraInputs.AddCustomActions);
 
             //Adding default keybindings
