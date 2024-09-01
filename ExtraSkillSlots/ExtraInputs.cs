@@ -97,14 +97,14 @@ namespace ExtraSkillSlots
             if (userProfile.joystickMap.AllMaps.All(map => map.actionId != action.ActionId))
             {
                 userProfile.joystickMap.CreateElementMap(action.DefaultJoystickMap.actionId, action.DefaultJoystickMap.axisContribution, action.DefaultJoystickMap.elementIdentifierId, action.DefaultJoystickMap.elementType, action.DefaultJoystickMap.axisRange, action.DefaultJoystickMap.invert);
-                action.DefaultJoystickMap.cNRtEejHCWUdzrhmpthsuslcVcs(userProfile.joystickMap);
+                action.DefaultJoystickMap.cVYzDXVDMNXvRMrklCVdVyeXGAlK(userProfile.joystickMap);
             }
 
             if (userProfile.keyboardMap.AllMaps.All(map => map.actionId != action.ActionId))
             {
                 userProfile.keyboardMap.CreateElementMap(action.DefaultKeyboardMap.actionId, action.DefaultKeyboardMap.axisContribution, action.DefaultKeyboardMap.elementIdentifierId, action.DefaultJoystickMap.elementType, action.DefaultJoystickMap.axisRange, action.DefaultJoystickMap.invert, out var resultMap);
                 resultMap._keyboardKeyCode = action.DefaultKeyboardKey;
-                action.DefaultKeyboardMap.cNRtEejHCWUdzrhmpthsuslcVcs(userProfile.keyboardMap);
+                action.DefaultKeyboardMap.cVYzDXVDMNXvRMrklCVdVyeXGAlK(userProfile.keyboardMap);
             }
         
         }

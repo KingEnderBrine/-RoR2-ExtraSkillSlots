@@ -26,7 +26,7 @@ namespace ExtraSkillSlots
             var skill3State = false;
             var skill4State = false;
 
-            if (PlayerCharacterMasterController.CanSendBodyInput(playerCharacterMasterController.networkUser, out _, out var inputPlayer, out _))
+            if (PlayerCharacterMasterController.CanSendBodyInput(playerCharacterMasterController.networkUser, out _, out var inputPlayer, out _, out var onlyAllowMovement) && !onlyAllowMovement)
             {
                 skill1State = inputPlayer.GetButton(RewiredAction.FirstExtraSkill.ActionId);
                 skill2State = inputPlayer.GetButton(RewiredAction.SecondExtraSkill.ActionId);

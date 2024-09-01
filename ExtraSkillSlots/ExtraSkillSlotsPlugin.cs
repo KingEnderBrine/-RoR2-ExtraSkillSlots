@@ -18,7 +18,7 @@ namespace ExtraSkillSlots
     {
         public const string GUID = "com.KingEnderBrine.ExtraSkillSlots";
         public const string Name = "Extra Skill Slots";
-        public const string Version = "1.5.1";
+        public const string Version = "1.6.0";
 
         internal static ExtraSkillSlotsPlugin Instance { get; private set; }
         internal static ManualLogSource InstanceLogger => Instance?.Logger;
@@ -31,7 +31,7 @@ namespace ExtraSkillSlots
             ExtraInputs.AddActionsToInputCatalog();
             
             //Hook to method with some rewired initialization (or not? Anyway it works) to add custom actions
-            var userDataInit = typeof(UserData).GetMethod(nameof(UserData.wVZZKoPFwEvodLvLcYNvVAPKpUj), BindingFlags.NonPublic | BindingFlags.Instance);
+            var userDataInit = typeof(UserData).GetMethod(nameof(UserData.gLOOAxUFAvrvUufkVjaYyZoeLbLE), BindingFlags.NonPublic | BindingFlags.Instance);
             HookEndpointManager.Add(userDataInit, ExtraInputs.AddCustomActions);
 
             //Adding default keybindings
