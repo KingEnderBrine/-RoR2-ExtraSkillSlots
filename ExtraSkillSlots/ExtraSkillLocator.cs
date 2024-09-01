@@ -1,7 +1,5 @@
-﻿using Mono.Cecil.Cil;
-using MonoMod.Cil;
-using RoR2;
-using System;
+﻿using RoR2;
+using HarmonyLib;
 using UnityEngine;
 
 namespace ExtraSkillSlots
@@ -11,6 +9,7 @@ namespace ExtraSkillSlots
     /// </summary>
     [RequireComponent(typeof(SkillLocator))]
     [DisallowMultipleComponent]
+    [HarmonyPatch]
     public class ExtraSkillLocator : MonoBehaviour
     {
         public GenericSkill extraFirst;
@@ -26,56 +25,66 @@ namespace ExtraSkillSlots
             }
         }
 
-        internal static GenericSkill GetSkillOverrideHook(On.RoR2.SkillLocator.orig_GetSkill orig, SkillLocator self, SkillSlot skillSlot)
+        [HarmonyPrefix, HarmonyPatch(typeof(SkillLocator), nameof(SkillLocator.GetSkill))]
+        internal static bool GetSkillOverrideHook(SkillLocator __instance, SkillSlot skillSlot, ref GenericSkill __result)
         {
-            var extraSkillLocator = self.GetComponent<ExtraSkillLocator>();
+            var extraSkillLocator = __instance.GetComponent<ExtraSkillLocator>();
             if (!extraSkillLocator)
             {
-                return orig(self, skillSlot);
+                return true;
             }
 
-            return (ExtraSkillSlot)skillSlot switch
+            var skill = (ExtraSkillSlot)skillSlot switch
             {
                 ExtraSkillSlot.ExtraFirst => extraSkillLocator.extraFirst,
                 ExtraSkillSlot.ExtraSecond => extraSkillLocator.extraSecond,
                 ExtraSkillSlot.ExtraThird => extraSkillLocator.extraThird,
                 ExtraSkillSlot.ExtraFourth => extraSkillLocator.extraFourth,
-                _ => orig(self, skillSlot)
+                _ => null
             };
+            if (!skill) return true;
+            __result = skill;
+            return false;
         }
 
-        internal static SkillSlot FindSkillSlotOverrideHook(On.RoR2.SkillLocator.orig_FindSkillSlot orig, SkillLocator self, GenericSkill skillComponent)
+        [HarmonyPrefix, HarmonyPatch(typeof(SkillLocator), nameof(SkillLocator.FindSkillSlot))]
+        internal static bool FindSkillSlotOverrideHook(SkillLocator __instance, ref SkillSlot __result, GenericSkill skillComponent)
         {
-            var extraSkillLocator = self.GetComponent<ExtraSkillLocator>();
+            var extraSkillLocator = __instance.GetComponent<ExtraSkillLocator>();
 
             if (!extraSkillLocator)
             {
-                return orig(self, skillComponent);
+                return true;
             }
 
             if (!skillComponent)
             {
-                return SkillSlot.None;
+                __result = SkillSlot.None;
+                return false;
             }
 
             if (skillComponent == extraSkillLocator.extraFirst)
             {
-                return (SkillSlot)ExtraSkillSlot.ExtraFirst;
+                __result = (SkillSlot)ExtraSkillSlot.ExtraFirst;
+                return false;
             }
             if (skillComponent == extraSkillLocator.extraSecond)
             {
-                return (SkillSlot)ExtraSkillSlot.ExtraSecond;
+                __result = (SkillSlot)ExtraSkillSlot.ExtraSecond;
+                return false;
             }
             if (skillComponent == extraSkillLocator.extraThird)
             {
-                return (SkillSlot)ExtraSkillSlot.ExtraThird;
+                __result = (SkillSlot)ExtraSkillSlot.ExtraThird;
+                return false;
             }
             if (skillComponent == extraSkillLocator.extraFourth)
             {
-                return (SkillSlot)ExtraSkillSlot.ExtraFourth;
+                __result = (SkillSlot)ExtraSkillSlot.ExtraFourth;
+                return false;
             }
 
-            return orig(self, skillComponent);
+            return true;
         }
     }
 }

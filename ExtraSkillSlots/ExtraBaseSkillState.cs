@@ -3,9 +3,11 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
 using System.Runtime.CompilerServices;
+using HarmonyLib;
 
 namespace ExtraSkillSlots
 {
+    [HarmonyPatch]
     internal class ExtraBaseSkillState
     {
         private static readonly ConditionalWeakTable<BaseSkillState, ExtraBaseSkillState> instances = new ConditionalWeakTable<BaseSkillState, ExtraBaseSkillState>();
@@ -13,6 +15,7 @@ namespace ExtraSkillSlots
         public ExtraSkillLocator ExtraSkillLocator { get; private set; }
         public ExtraInputBankTest ExtraInputBankTest { get; private set; }
 
+        [HarmonyILManipulator, HarmonyPatch(typeof(SkillStateMethods), nameof(SkillStateMethods.IsKeyDownAuthority))]
         public static void IsKeyDownAuthorityILHook(ILContext il)
         {
             var c = new ILCursor(il);

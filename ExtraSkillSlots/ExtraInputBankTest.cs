@@ -1,10 +1,12 @@
-﻿using RoR2;
+﻿using HarmonyLib;
+using RoR2;
 using UnityEngine;
 
 namespace ExtraSkillSlots
 {
     [RequireComponent(typeof(InputBankTest))]
     [DisallowMultipleComponent]
+    [HarmonyPatch]
     public class ExtraInputBankTest : MonoBehaviour
     {
         public InputBankTest.ButtonState extraSkill1;
@@ -12,22 +14,15 @@ namespace ExtraSkillSlots
         public InputBankTest.ButtonState extraSkill3;
         public InputBankTest.ButtonState extraSkill4;
 
-        internal static bool CheckAnyButtonDownOverrideHook(On.RoR2.InputBankTest.orig_CheckAnyButtonDown orig, InputBankTest self)
+        [HarmonyPostfix, HarmonyPatch(typeof(InputBankTest), nameof(InputBankTest.CheckAnyButtonDown))]
+        internal static void CheckAnyButtonDownOverrideHook(InputBankTest __instance, ref bool __result)
         {
-            if (orig(self))
-            {
-                return true;
-            }
-            var extraInputBankTest = self.GetComponent<ExtraInputBankTest>();
-            if (!extraInputBankTest)
-            {
-                return false;
-            }
-            return
-                extraInputBankTest.extraSkill1.down ||
-                extraInputBankTest.extraSkill2.down ||
-                extraInputBankTest.extraSkill3.down ||
-                extraInputBankTest.extraSkill4.down;
+            var extraInputBankTest = __instance.GetComponent<ExtraInputBankTest>();
+            __result |= extraInputBankTest &&
+                        (extraInputBankTest.extraSkill1.down ||
+                         extraInputBankTest.extraSkill2.down ||
+                         extraInputBankTest.extraSkill3.down ||
+                         extraInputBankTest.extraSkill4.down);
         }
     }
 }

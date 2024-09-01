@@ -1,9 +1,11 @@
 ﻿using EntityStates;
 using RoR2;
 using System.Runtime.CompilerServices;
+using HarmonyLib;
 
 namespace ExtraSkillSlots
 {
+    [HarmonyPatch]
     internal class ExtraGenericCharacterMain
     {
         private static readonly ConditionalWeakTable<GenericCharacterMain, ExtraGenericCharacterMain> instances = new ConditionalWeakTable<GenericCharacterMain, ExtraGenericCharacterMain>();
@@ -18,21 +20,20 @@ namespace ExtraSkillSlots
 
         private ExtraGenericCharacterMain() { }
 
-        internal static void PerformInputsOverrideHook(On.EntityStates.GenericCharacterMain.orig_PerformInputs orig, GenericCharacterMain self)
+        [HarmonyPostfix, HarmonyPatch(typeof(GenericCharacterMain), nameof(GenericCharacterMain.PerformInputs))]
+        internal static void PerformInputsOverrideHook(GenericCharacterMain __instance)
         {
-            orig(self);
-
-            if (!self.isAuthority)
+            if (!__instance.isAuthority)
             {
                 return;
             }
 
-            if (!instances.TryGetValue(self, out var extraGenericCharacterMain))
+            if (!instances.TryGetValue(__instance, out var extraGenericCharacterMain))
             {
-                instances.Add(self, extraGenericCharacterMain = new ExtraGenericCharacterMain
+                instances.Add(__instance, extraGenericCharacterMain = new ExtraGenericCharacterMain
                 {
-                    ExtraSkillLocator = self.outer.GetComponent<ExtraSkillLocator>(),
-                    ExtraInputBankTest = self.outer.GetComponent<ExtraInputBankTest>()
+                    ExtraSkillLocator = __instance.outer.GetComponent<ExtraSkillLocator>(),
+                    ExtraInputBankTest = __instance.outer.GetComponent<ExtraInputBankTest>()
                 });
             }
 
@@ -51,22 +52,21 @@ namespace ExtraSkillSlots
             {
                 bool flag = inputReceived;
                 inputReceived = false;
-                if (!skillSlot || !justPressed && (!flag || skillSlot.mustKeyPress) || !self.CanExecuteSkill(skillSlot))
+                if (!skillSlot || !justPressed && (!flag || skillSlot.mustKeyPress) || !__instance.CanExecuteSkill(skillSlot))
                     return;
                 skillSlot.ExecuteIfReady();
             }
         }
 
-        internal static void GatherInputsOverrideHook(On.EntityStates.GenericCharacterMain.orig_GatherInputs orig, GenericCharacterMain self)
+        [HarmonyPostfix, HarmonyPatch(typeof(GenericCharacterMain), nameof(GenericCharacterMain.GatherInputs))]
+        internal static void GatherInputsOverrideHook(GenericCharacterMain __instance)
         {
-            orig(self);
-
-            if (!instances.TryGetValue(self, out var extraGenericCharacterMain))
+            if (!instances.TryGetValue(__instance, out var extraGenericCharacterMain))
             {
-                instances.Add(self, extraGenericCharacterMain = new ExtraGenericCharacterMain
+                instances.Add(__instance, extraGenericCharacterMain = new ExtraGenericCharacterMain
                 {
-                    ExtraSkillLocator = self.outer.GetComponent<ExtraSkillLocator>(),
-                    ExtraInputBankTest = self.outer.GetComponent<ExtraInputBankTest>()
+                    ExtraSkillLocator = __instance.outer.GetComponent<ExtraSkillLocator>(),
+                    ExtraInputBankTest = __instance.outer.GetComponent<ExtraInputBankTest>()
                 });
             }
 

@@ -1,11 +1,14 @@
-﻿using Mono.Cecil.Cil;
+﻿using HarmonyLib;
+using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using RoR2;
 
 namespace ExtraSkillSlots
 {
+    [HarmonyPatch]
     internal static class ExtraCharacterBody
     {
+        [HarmonyILManipulator, HarmonyPatch(typeof(CharacterBody),nameof(CharacterBody.RecalculateStats))]
         internal static void RecalculateStatsILHook(ILContext il)
         {
             var c = new ILCursor(il);

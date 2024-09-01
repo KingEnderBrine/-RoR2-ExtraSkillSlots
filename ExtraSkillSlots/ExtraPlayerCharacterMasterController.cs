@@ -1,9 +1,11 @@
-﻿using RoR2;
+﻿using HarmonyLib;
+using RoR2;
 using UnityEngine;
 using UnityEngine.Networking;
 
 namespace ExtraSkillSlots
 {
+    [HarmonyPatch]
     internal class ExtraPlayerCharacterMasterController : NetworkBehaviour
     {
         private PlayerCharacterMasterController playerCharacterMasterController;
@@ -40,23 +42,22 @@ namespace ExtraSkillSlots
             extraInputBankTest.extraSkill4.PushState(skill4State);
         }
 
-        internal static void SetBodyOverrideHook(On.RoR2.PlayerCharacterMasterController.orig_SetBody orig, PlayerCharacterMasterController self,  GameObject newBody)
+        [HarmonyPostfix, HarmonyPatch(typeof(PlayerCharacterMasterController), nameof(PlayerCharacterMasterController.SetBody))]
+        internal static void SetBodyOverrideHook(PlayerCharacterMasterController __instance, GameObject newBody)
         {
-            orig(self, newBody);
-
-            var extraMaster = self.GetComponent<ExtraPlayerCharacterMasterController>();
+            var extraMaster = __instance.GetComponent<ExtraPlayerCharacterMasterController>();
             if (!extraMaster)
             {
                 return;
             }
 
-            extraMaster.extraInputBankTest = self.body ? self.body.GetComponent<ExtraInputBankTest>() : null;
+            extraMaster.extraInputBankTest = __instance.body ? __instance.body.GetComponent<ExtraInputBankTest>() : null;
         }
-
-        internal static void AwakeHook(On.RoR2.PlayerCharacterMasterController.orig_Awake orig, PlayerCharacterMasterController self)
+        
+        [HarmonyPostfix, HarmonyPatch(typeof(PlayerCharacterMasterController), nameof(PlayerCharacterMasterController.Awake))]
+        internal static void AwakeHook(PlayerCharacterMasterController __instance)
         {
-            orig(self);
-            self.gameObject.AddComponent<ExtraPlayerCharacterMasterController>();
+            __instance.gameObject.AddComponent<ExtraPlayerCharacterMasterController>();
         }
     }
 }

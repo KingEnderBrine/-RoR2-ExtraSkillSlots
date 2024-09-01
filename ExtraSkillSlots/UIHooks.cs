@@ -3,27 +3,27 @@ using MonoMod.Cil;
 using RoR2;
 using RoR2.UI;
 using System;
+using HarmonyLib;
 using UnityEngine;
 
 namespace ExtraSkillSlots
 {
+    [HarmonyPatch]
     internal static class UIHooks
     {
-        internal static void HUDAwake(On.RoR2.UI.HUD.orig_Awake orig, HUD self)
+        [HarmonyPostfix, HarmonyPatch(typeof(HUD), nameof(HUD.Awake))]
+        internal static void HUDAwake(HUD __instance)
         {
-            orig(self);
-
-            self.gameObject.AddComponent<ExtraHud>();
+            __instance.gameObject.AddComponent<ExtraHud>();
         }
 
         #region SettingsPanelController
-        internal static void SettingsPanelControllerStart(On.RoR2.UI.SettingsPanelController.orig_Start orig, RoR2.UI.SettingsPanelController self)
+        [HarmonyPostfix, HarmonyPatch(typeof(SettingsPanelController), nameof(SettingsPanelController.Start))]
+        internal static void SettingsPanelControllerStart(SettingsPanelController __instance)
         {
-            orig(self);
-
-            if (self.name == "SettingsSubPanel, Controls (M&KB)" || self.name == "SettingsSubPanel, Controls (Gamepad)")
+            if (__instance.name == "SettingsSubPanel, Controls (M&KB)" || __instance.name == "SettingsSubPanel, Controls (Gamepad)")
             {
-                var jumpBindingTransform = self.transform.Find("Scroll View/Viewport/VerticalLayout/SettingsEntryButton, Binding (Jump)");
+                var jumpBindingTransform = __instance.transform.Find("Scroll View/Viewport/VerticalLayout/SettingsEntryButton, Binding (Jump)");
 
                 AddActionBindingToSettings(RewiredAction.FirstExtraSkill.Name, jumpBindingTransform);
                 AddActionBindingToSettings(RewiredAction.SecondExtraSkill.Name, jumpBindingTransform);
@@ -43,6 +43,7 @@ namespace ExtraSkillSlots
         }
         #endregion
 
+        [HarmonyILManipulator, HarmonyPatch(typeof(LoadoutPanelController.Row), nameof(LoadoutPanelController.Row.FromSkillSlot))]
         internal static void LoadoutPanelControllerFromSkillSlot(ILContext il)
         {
             var c = new ILCursor(il);
