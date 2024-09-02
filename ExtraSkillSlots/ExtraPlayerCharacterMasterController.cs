@@ -14,7 +14,7 @@ namespace ExtraSkillSlots
             playerCharacterMasterController = GetComponent<PlayerCharacterMasterController>();
         }
 
-        public void FixedUpdate()
+        public void Update()
         {
             if (!extraInputBankTest || !playerCharacterMasterController.hasEffectiveAuthority || !extraInputBankTest)
             {

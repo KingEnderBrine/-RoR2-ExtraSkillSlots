@@ -1,4 +1,8 @@
 # Changelog
+**1.6.1**
+
+* Fixed an issue where inputs sometimes wouldn't register.
+
 **1.6.0**
 
 * Fixes for `Seekers of the Storm` update.
