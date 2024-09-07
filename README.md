@@ -2,7 +2,7 @@
 It's utility mod and does almost nothing on its own.
 What you should know about it is that mod has key bindings for extra skills that must be assigned in settings.
 Here's, I think, the best key bindings (default, starting from 1.4.0):
-![Keybingins](https://cdn.discordapp.com/attachments/706089456855154778/731500696800854036/Settings.jpg)
+![Keybingins](https://github.com/KingEnderBrine/-RoR2-ExtraSkillSlots/blob/master/Screenshots/1.jpg?raw=true)
 
 # For developers
 #### TL; DR;
