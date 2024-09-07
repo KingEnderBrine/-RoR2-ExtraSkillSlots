@@ -1,4 +1,8 @@
 # Changelog
+**1.6.2**
+
+* Revert previous patch as it's now wrong with latest game update.
+
 **1.6.1**
 
 * Fixed an issue where inputs sometimes wouldn't register.
