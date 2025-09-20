@@ -18,7 +18,7 @@ namespace ExtraSkillSlots
     {
         public const string GUID = "com.KingEnderBrine.ExtraSkillSlots";
         public const string Name = "Extra Skill Slots";
-        public const string Version = "1.6.2";
+        public const string Version = "1.6.3";
 
         internal static ExtraSkillSlotsPlugin Instance { get; private set; }
         internal static ManualLogSource InstanceLogger => Instance?.Logger;
@@ -37,6 +37,7 @@ namespace ExtraSkillSlots
             //Adding default keybindings
             On.RoR2.UserProfile.LoadDefaultProfile += ExtraInputs.OnLoadDefaultProfile;
             On.RoR2.SaveSystem.LoadUserProfiles += ExtraInputs.OnLoadUserProfiles;
+            On.RoR2.UserProfile.FillDefaultJoystickMaps += ExtraInputs.OnFillDefaultJoystickMaps;
 
             //Adding custom actions to Settings
             On.RoR2.UI.SettingsPanelController.Start += UIHooks.SettingsPanelControllerStart;

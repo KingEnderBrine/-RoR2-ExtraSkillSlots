@@ -19,7 +19,7 @@ namespace ExtraSkillSlots
         private InputAction inputAction;
 
         private ActionElementMap _defaultJoystickMap;
-        public ActionElementMap DefaultJoystickMap { get => _defaultJoystickMap ??= new ActionElementMap(ActionId, ControllerElementType.Button, DefaultJoystickKey, Pole.Positive, AxisRange.Full); }
+        public ActionElementMap DefaultJoystickMap { get => _defaultJoystickMap ??= new ActionElementMap(ActionId, ControllerElementType.Button, DefaultJoystickKey, Pole.Positive, AxisRange.Positive); }
 
         private ActionElementMap _defaultKeyboardMap;
         public ActionElementMap DefaultKeyboardMap { get => _defaultKeyboardMap ??= new ActionElementMap(ActionId, ControllerElementType.Button, (int)DefaultKeyboardKey - 21) { _keyboardKeyCode = DefaultKeyboardKey }; }

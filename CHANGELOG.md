@@ -1,4 +1,8 @@
 # Changelog
+**1.6.3**
+
+* Fixed an issue where default keybindings for a gamepad would be shown in the settings but wouldn't work in the game unless you rebind them.
+
 **1.6.2**
 
 * Revert previous patch as it's now wrong with latest game update.

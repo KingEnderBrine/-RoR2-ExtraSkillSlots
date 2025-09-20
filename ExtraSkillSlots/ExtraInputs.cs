@@ -26,13 +26,10 @@ namespace ExtraSkillSlots
             self.actions?.Add(RewiredAction.ThirdExtraSkill);
             self.actions?.Add(RewiredAction.FourthExtraSkill);
 
-            var joystickMap = self.joystickMaps?.FirstOrDefault();
-            var keyboardMap = self.keyboardMaps?.FirstOrDefault();
-            
-            FillActionMaps(RewiredAction.FirstExtraSkill, keyboardMap, joystickMap);
-            FillActionMaps(RewiredAction.SecondExtraSkill, keyboardMap, joystickMap);
-            FillActionMaps(RewiredAction.ThirdExtraSkill, keyboardMap, joystickMap);
-            FillActionMaps(RewiredAction.FourthExtraSkill, keyboardMap, joystickMap);
+            FillActionMaps(RewiredAction.FirstExtraSkill, self.keyboardMaps, self.joystickMaps);
+            FillActionMaps(RewiredAction.SecondExtraSkill, self.keyboardMaps, self.joystickMaps);
+            FillActionMaps(RewiredAction.ThirdExtraSkill, self.keyboardMaps, self.joystickMaps);
+            FillActionMaps(RewiredAction.FourthExtraSkill, self.keyboardMaps, self.joystickMaps);
 
             orig(self);
         }
@@ -45,7 +42,7 @@ namespace ExtraSkillSlots
             {
                 try
                 {
-                    AddMissingBingings(userProfile);
+                    AddMissingBindings(userProfile);
                     userProfile.RequestEventualSave();
                 }
                 catch(Exception e)
@@ -62,7 +59,7 @@ namespace ExtraSkillSlots
 
             try
             {
-                AddMissingBingings(UserProfile.defaultProfile);
+                AddMissingBindings(UserProfile.defaultProfile);
             }
             catch (Exception e)
             {
@@ -71,7 +68,13 @@ namespace ExtraSkillSlots
             }
         }
 
-        private static void AddMissingBingings(UserProfile userProfile)
+        internal static void OnFillDefaultJoystickMaps(On.RoR2.UserProfile.orig_FillDefaultJoystickMaps orig, UserProfile self)
+        {
+            orig(self);
+            AddMissingBindings(self);
+        }
+
+        private static void AddMissingBindings(UserProfile userProfile)
         {
             AddActionMaps(RewiredAction.FirstExtraSkill, userProfile);
             AddActionMaps(RewiredAction.SecondExtraSkill, userProfile);
@@ -79,25 +82,34 @@ namespace ExtraSkillSlots
             AddActionMaps(RewiredAction.FourthExtraSkill, userProfile);
         }
 
-        private static void FillActionMaps(RewiredAction action, ControllerMap_Editor keyboardMap, ControllerMap_Editor joystickMap)
+        private static void FillActionMaps(RewiredAction action, List<ControllerMap_Editor> keyboardMaps, List<ControllerMap_Editor> joystickMaps)
         {
-            if (joystickMap != null && joystickMap.actionElementMaps.All(map => map.actionId != action.ActionId))
+            foreach (var joystickMap in joystickMaps)
             {
-                joystickMap.actionElementMaps.Add(action.DefaultJoystickMap);
+                if (joystickMap.categoryId == 0 && joystickMap.actionElementMaps.All(map => map.actionId != action.ActionId))
+                {
+                    joystickMap.actionElementMaps.Add(action.DefaultJoystickMap);
+                }
             }
 
-            if (keyboardMap != null && keyboardMap.actionElementMaps.All(map => map.actionId != action.ActionId))
+            foreach (var keyboardMap in keyboardMaps)
             {
-                keyboardMap.actionElementMaps.Add(action.DefaultKeyboardMap);
+                if (keyboardMap.categoryId == 0 && keyboardMap.actionElementMaps.All(map => map.actionId != action.ActionId))
+                {
+                    keyboardMap.actionElementMaps.Add(action.DefaultKeyboardMap);
+                }
             }
         }
 
         private static void AddActionMaps(RewiredAction action, UserProfile userProfile)
         {
-            if (userProfile.joystickMap.AllMaps.All(map => map.actionId != action.ActionId))
+            foreach (var (_, map) in userProfile.HardwareJoystickMaps2)
             {
-                userProfile.joystickMap.CreateElementMap(action.DefaultJoystickMap.actionId, action.DefaultJoystickMap.axisContribution, action.DefaultJoystickMap.elementIdentifierId, action.DefaultJoystickMap.elementType, action.DefaultJoystickMap.axisRange, action.DefaultJoystickMap.invert);
-                action.DefaultJoystickMap.cVYzDXVDMNXvRMrklCVdVyeXGAlK(userProfile.joystickMap);
+                if (map.AllMaps.All(map => map.actionId != action.ActionId))
+                {
+                    map.CreateElementMap(action.DefaultJoystickMap.actionId, action.DefaultJoystickMap.axisContribution, action.DefaultJoystickMap.elementIdentifierId, action.DefaultJoystickMap.elementType, action.DefaultJoystickMap.axisRange, action.DefaultJoystickMap.invert);
+                    action.DefaultJoystickMap.cVYzDXVDMNXvRMrklCVdVyeXGAlK(map);
+                }
             }
 
             if (userProfile.keyboardMap.AllMaps.All(map => map.actionId != action.ActionId))
@@ -107,12 +119,6 @@ namespace ExtraSkillSlots
                 action.DefaultKeyboardMap.cVYzDXVDMNXvRMrklCVdVyeXGAlK(userProfile.keyboardMap);
             }
         
-        }
-
-        private static void Deconstruct<TKey, TValue>(this KeyValuePair<TKey, TValue> pair, out TKey key, out TValue value)
-        {
-            key = pair.Key;
-            value = pair.Value;
         }
     }
 }
