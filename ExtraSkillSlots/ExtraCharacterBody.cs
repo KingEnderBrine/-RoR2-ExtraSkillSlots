@@ -26,7 +26,7 @@ namespace ExtraSkillSlots
             c.Emit(OpCodes.Ldarg_0);
             c.Emit(OpCodes.Ldloc, cooldownScaleIndex);
             c.Emit(OpCodes.Ldloc, flatCooldownReductionIndex);
-            c.Emit(OpCodes.Call, typeof(ExtraCharacterBody).GetMethod(nameof(RecalculateCooldowns), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static));
+            c.EmitDelegate(RecalculateCooldowns);
         }
 
         private static void RecalculateCooldowns(CharacterBody characterBody, float scale, float flatCooldownReduction)

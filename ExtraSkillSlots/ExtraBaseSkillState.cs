@@ -1,16 +1,15 @@
 ﻿using EntityStates;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using RoR2BepInExPack.Utilities;
 using System;
-using System.Runtime.CompilerServices;
 
 namespace ExtraSkillSlots
 {
     internal class ExtraBaseSkillState
     {
-        private static readonly ConditionalWeakTable<BaseSkillState, ExtraBaseSkillState> instances = new ConditionalWeakTable<BaseSkillState, ExtraBaseSkillState>();
+        private static readonly FixedConditionalWeakTable<BaseSkillState, ExtraBaseSkillState> instances = new FixedConditionalWeakTable<BaseSkillState, ExtraBaseSkillState>();
 
-        public ExtraSkillLocator ExtraSkillLocator { get; private set; }
         public ExtraInputBankTest ExtraInputBankTest { get; private set; }
 
         public static void IsKeyDownAuthorityILHook(ILContext il)
@@ -26,7 +25,7 @@ namespace ExtraSkillSlots
 
             c.Remove();
             c.Emit(OpCodes.Ldarg_0);
-            c.Emit(OpCodes.Call, typeof(ExtraBaseSkillState).GetMethod(nameof(IsKeyDown), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static));
+            c.EmitDelegate(IsKeyDown);
             c.Emit(OpCodes.Ret);
         }
 
@@ -36,15 +35,13 @@ namespace ExtraSkillSlots
             {
                 instances.Add(skillState, extraBaseSkillState = new ExtraBaseSkillState
                 {
-                    ExtraSkillLocator = skillState.outer.GetComponent<ExtraSkillLocator>(),
                     ExtraInputBankTest = skillState.outer.GetComponent<ExtraInputBankTest>()
                 });
             }
 
-            var extraSkillLocator = extraBaseSkillState.ExtraSkillLocator;
             var extraInputBank = extraBaseSkillState.ExtraInputBankTest;
 
-            if (!extraSkillLocator || !extraInputBank)
+            if (!extraInputBank)
             {
                 return false;
             }

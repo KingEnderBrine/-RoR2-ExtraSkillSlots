@@ -17,7 +17,7 @@ namespace ExtraSkillSlots
         }
 
         #region SettingsPanelController
-        internal static void SettingsPanelControllerStart(On.RoR2.UI.SettingsPanelController.orig_Start orig, RoR2.UI.SettingsPanelController self)
+        internal static void SettingsPanelControllerStart(On.RoR2.UI.SettingsPanelController.orig_Awake orig, RoR2.UI.SettingsPanelController self)
         {
             orig(self);
 
@@ -37,7 +37,7 @@ namespace ExtraSkillSlots
             var inputBindingObject = GameObject.Instantiate(buttonToCopy, buttonToCopy.parent);
             var inputBindingControl = inputBindingObject.GetComponent<InputBindingControl>();
             inputBindingControl.actionName = actionName;
-            //Usualy calling awake is bad as it's supposed to be called only by unity.
+            //Usually calling awake is bad as it's supposed to be called only by unity.
             //But in this case it is necessary to apply "actionName" change.
             inputBindingControl.Awake();
         }
