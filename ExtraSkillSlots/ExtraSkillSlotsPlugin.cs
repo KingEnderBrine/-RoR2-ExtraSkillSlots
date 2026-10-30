@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using MonoMod.RuntimeDetour.HookGen;
 using Rewired.Data;
@@ -18,7 +19,9 @@ namespace ExtraSkillSlots
     {
         public const string GUID = "com.KingEnderBrine.ExtraSkillSlots";
         public const string Name = "Extra Skill Slots";
-        public const string Version = "1.6.5";
+        public const string Version = "1.7.0";
+
+        internal static ConfigEntry<ModifierButtonBehavior> ModifierButtonBehavior { get; private set; }
 
         internal static ExtraSkillSlotsPlugin Instance { get; private set; }
         internal static ManualLogSource InstanceLogger => Instance?.Logger;
@@ -26,6 +29,14 @@ namespace ExtraSkillSlots
         private void Start()
         {
             Instance = this;
+
+            ModifierButtonBehavior = Config.Bind(
+                "Main",
+                "Modifier button behavior",
+                ExtraSkillSlots.ModifierButtonBehavior.Default,
+                "Determines how modifier button for gamepad should behave.\n" +
+                "Default - You must hold modifier button and press skill button to activate a skill\n" +
+                "Ignore - Modifier button will not be required to activate extra skills");
 
             //Add actions to RoR2.InputCatalog
             ExtraInputs.AddActionsToInputCatalog();
@@ -38,6 +49,7 @@ namespace ExtraSkillSlots
             On.RoR2.UserProfile.LoadDefaultProfile += ExtraInputs.OnLoadDefaultProfile;
             On.RoR2.SaveSystem.LoadUserProfiles += ExtraInputs.OnLoadUserProfiles;
             On.RoR2.UserProfile.FillDefaultJoystickMaps += ExtraInputs.OnFillDefaultJoystickMaps;
+            On.RoR2.InputMapperHelper.DoActionElementMapsHaveOverlappingElementOrAction += ExtraInputs.InputMapperHelperDoActionElementMapsHaveOverlappingElementOrAction;
 
             //Adding custom actions to Settings
             On.RoR2.UI.SettingsPanelController.Awake += UIHooks.SettingsPanelControllerStart;
@@ -53,10 +65,14 @@ namespace ExtraSkillSlots
 
             //Applying overrides to GenericCharacterMain to be able to use extra skills
             On.EntityStates.GenericCharacterMain.PerformInputs += ExtraGenericCharacterMain.PerformInputsOverrideHook;
-            On.EntityStates.GenericCharacterMain.GatherInputs += ExtraGenericCharacterMain.GatherInputsOverrideHook;
 
             //Applying override to BaseSkillState
             IL.EntityStates.SkillStateMethods.IsKeyDownAuthority += ExtraBaseSkillState.IsKeyDownAuthorityILHook;
+            IL.EntityStates.SkillStateMethods.IsKeyJustPressedAuthority += ExtraBaseSkillState.IsKeyJustPressedAuthorityILHook;
+            IL.EntityStates.SkillStateMethods.IsKeyJustReleasedAuthority += ExtraBaseSkillState.IsKeyJustReleasedAuthorityILHook;
+            IL.EntityStates.SkillStateMethods.IsKeyPressClaimedAuthority += ExtraBaseSkillState.IsKeyPressClaimedAuthorityILHook;
+            IL.EntityStates.SkillStateMethods.SetKeyPressClaimedAuthority += ExtraBaseSkillState.SetKeyPressClaimedAuthorityILHook;
+            IL.EntityStates.SkillStateMethods.GetSkillDamageSource += ExtraBaseSkillState.GetSkillDamageSourceIlHook;
 
             //Adding custom PlayerCharacterMasterController
             On.RoR2.PlayerCharacterMasterController.Awake += ExtraPlayerCharacterMasterController.AwakeHook;
@@ -68,9 +84,16 @@ namespace ExtraSkillSlots
             //Fixing getting extra skill slots for UI
             IL.RoR2.UI.LoadoutPanelController.Row.FromSkillSlot += UIHooks.LoadoutPanelControllerFromSkillSlot;
 
+            On.RoR2.UI.CursedBookExtraDisplay.Awake += UIHooks.CursedBookExtraDisplayAwake;
+
             Language.collectLanguageRootFolders += CollectLanguageRootFolders;
 
             NetworkModCompatibilityHelper.networkModList = NetworkModCompatibilityHelper.networkModList.Append($"{GUID};{Version}");
+
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.rune580.riskofoptions"))
+            {
+                RiskOfOptionsCompat.AddConfig();
+            }
         }
 
         private void CollectLanguageRootFolders(List<string> folders)

@@ -1,3 +1,7 @@
+**1.7.0**
+* Changed how gamepad keybindings work, now allowing to bind to buttons that conflict with vanilla, but require modifier button to be pressed.
+* N'tormat's pages will grow to the left if a character uses extra skills.
+
 **1.6.5**
 * Fixes for `Hallowed Concepts` update.
 

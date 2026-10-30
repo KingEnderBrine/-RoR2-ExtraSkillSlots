@@ -18,6 +18,11 @@ namespace ExtraSkillSlots
         public GenericSkill extraThird;
         public GenericSkill extraFourth;
 
+        public DamageSource extraFirstDamageSource;
+        public DamageSource extraSecondDamageSource;
+        public DamageSource extraThirdDamageSource;
+        public DamageSource extraFourthDamageSource;
+
         private void Awake()
         {
             if (!GetComponent<ExtraInputBankTest>())

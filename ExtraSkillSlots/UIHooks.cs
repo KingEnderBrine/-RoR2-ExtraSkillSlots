@@ -21,9 +21,16 @@ namespace ExtraSkillSlots
         {
             orig(self);
 
-            if (self.name == "SettingsSubPanel, Controls (M&KB)" || self.name == "SettingsSubPanel, Controls (Gamepad)")
+            var name = self.name;
+
+            if (name == "SettingsSubPanel, Controls (M&KB)" || name == "SettingsSubPanel, Controls (Gamepad)")
             {
                 var jumpBindingTransform = self.transform.Find("Scroll View/Viewport/VerticalLayout/SettingsEntryButton, Binding (Jump)");
+
+                if (name == "SettingsSubPanel, Controls (Gamepad)")
+                {
+                    AddActionBindingToSettings(RewiredAction.ExtraModifier.Name, jumpBindingTransform);
+                }
 
                 AddActionBindingToSettings(RewiredAction.FirstExtraSkill.Name, jumpBindingTransform);
                 AddActionBindingToSettings(RewiredAction.SecondExtraSkill.Name, jumpBindingTransform);
@@ -90,6 +97,13 @@ namespace ExtraSkillSlots
                 ExtraSkillSlot.ExtraFourth => LanguageConsts.EXTRA_SKILL_SLOTS_FOURTH_EXTRA_SKILL,
                 _ => throw new ArgumentOutOfRangeException()
             };
+        }
+
+        internal static void CursedBookExtraDisplayAwake(On.RoR2.UI.CursedBookExtraDisplay.orig_Awake orig, RoR2.UI.CursedBookExtraDisplay self)
+        {
+            orig(self);
+
+            self.gameObject.AddComponent<BookPositionWithExtraSkills>();
         }
     }
 }

@@ -35,11 +35,24 @@ namespace ExtraSkillSlots
             skillCopyRectTransform.anchorMin = new Vector2(1, 2.5F);
             skillCopyRectTransform.anchorMax = new Vector2(1, 2.5F);
 
-            //Changing visual input binding
-            var inputBindingDisplayController = skillCopy.GetComponentInChildren<InputBindingDisplayController>();
-            inputBindingDisplayController.actionName = actionName;
+            var panel = skillCopy.Find("SkillBackgroundPanel");
+            var modifierText = panel.Find("SkillKeyText");
+            var skillText = Instantiate(modifierText, panel);
 
-            return skillCopy.GetComponent<SkillIcon>();
+            //Changing visual input binding
+            var keyDisplayController = skillText.GetComponent<InputBindingDisplayController>();
+            keyDisplayController.actionName = actionName;
+
+            var modifierDisplayController = modifierText.GetComponent<InputBindingDisplayController>();
+            modifierDisplayController.actionName = RewiredAction.ExtraModifier.Name;
+
+            panel.gameObject.AddComponent<MPEventSystemLocator>();
+            var displaySwitch = panel.gameObject.AddComponent<SkillInputDisplaySwitch>();
+            displaySwitch.modifierGO = modifierDisplayController.gameObject;
+
+            var icon = skillCopy.GetComponent<SkillIcon>();
+
+            return icon;
         }
 
         private void Update()

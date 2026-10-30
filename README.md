@@ -2,7 +2,20 @@
 It's utility mod and does almost nothing on its own.
 What you should know about it is that mod has key bindings for extra skills that must be assigned in settings.
 Here's, I think, the best key bindings (default, starting from 1.4.0):
-![Keybingins](https://github.com/KingEnderBrine/-RoR2-ExtraSkillSlots/blob/master/Screenshots/1.jpg?raw=true)
+
+### Keyboard:
+
+![Keyboard](https://github.com/KingEnderBrine/-RoR2-ExtraSkillSlots/blob/master/Screenshots/3.jpg?raw=true)
+
+### Gamepad:
+
+![Gamepad](https://github.com/KingEnderBrine/-RoR2-ExtraSkillSlots/blob/master/Screenshots/2.jpg?raw=true)
+
+# Gamepad
+Since there's only so much buttons on a gamepad and vanilla takes almost all of them, I've added a `Modifier button`.
+So you have to hold down the modifier button and then press buttons to activate extra skills.
+
+If you have a gamepad with some extra buttons you can disable modifier button in the config.
 
 # For developers
 #### TL; DR;
@@ -29,7 +42,7 @@ All defined classes extend corresponding classes from RoR2. Class naming follows
     * GenericSkill `extraThird` - contains info about third extra skill
     * GenericSkill `extraFourth` - contains info about fourth extra skill
 
-* `ExtraInputBankTest` - Containts info about user inputs state for extra skills.
+* `ExtraInputBankTest` - Contains info about user inputs state for extra skills.
 **Fields**:
     * InputBankTest.ButtonState `extraSkill1` - contains info about first extra skill state
     * InputBankTest.ButtonState `extraSkill2` - contains info about second extra skill state

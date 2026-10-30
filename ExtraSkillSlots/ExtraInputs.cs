@@ -17,19 +17,23 @@ namespace ExtraSkillSlots
             InputCatalog.actionToToken[RewiredAction.SecondExtraSkill] = RewiredAction.SecondExtraSkill.DisplayToken;
             InputCatalog.actionToToken[RewiredAction.ThirdExtraSkill] = RewiredAction.ThirdExtraSkill.DisplayToken;
             InputCatalog.actionToToken[RewiredAction.FourthExtraSkill] = RewiredAction.FourthExtraSkill.DisplayToken;
+            InputCatalog.actionToToken[RewiredAction.ExtraModifier] = RewiredAction.ExtraModifier.DisplayToken;
         }
 
         internal static void AddCustomActions(Action<UserData> orig, UserData self)
         {
+            self.mapCategories?.Add(RewiredAction.ExtraSkillsCategory);
             self.actions?.Add(RewiredAction.FirstExtraSkill);
             self.actions?.Add(RewiredAction.SecondExtraSkill);
             self.actions?.Add(RewiredAction.ThirdExtraSkill);
             self.actions?.Add(RewiredAction.FourthExtraSkill);
+            self.actions?.Add(RewiredAction.ExtraModifier);
 
-            FillActionMaps(RewiredAction.FirstExtraSkill, self.keyboardMaps, self.joystickMaps);
-            FillActionMaps(RewiredAction.SecondExtraSkill, self.keyboardMaps, self.joystickMaps);
-            FillActionMaps(RewiredAction.ThirdExtraSkill, self.keyboardMaps, self.joystickMaps);
-            FillActionMaps(RewiredAction.FourthExtraSkill, self.keyboardMaps, self.joystickMaps);
+            FillActionMaps(RewiredAction.FirstExtraSkill, self);
+            FillActionMaps(RewiredAction.SecondExtraSkill, self);
+            FillActionMaps(RewiredAction.ThirdExtraSkill, self);
+            FillActionMaps(RewiredAction.FourthExtraSkill, self);
+            FillActionMaps(RewiredAction.ExtraModifier, self);
 
             orig(self);
         }
@@ -74,17 +78,29 @@ namespace ExtraSkillSlots
             AddMissingBindings(self);
         }
 
+        internal static bool InputMapperHelperDoActionElementMapsHaveOverlappingElementOrAction(On.RoR2.InputMapperHelper.orig_DoActionElementMapsHaveOverlappingElementOrAction orig, Rewired.ActionElementMap a, Rewired.ActionElementMap b)
+        {
+            if ((a.controllerMap is JoystickMap && a.actionId >= RewiredAction.FirstExtraSkill.ActionId && a.actionId <= RewiredAction.FourthExtraSkill.ActionId) !=
+                (b.controllerMap is JoystickMap && b.actionId >= RewiredAction.FirstExtraSkill.ActionId && b.actionId <= RewiredAction.FourthExtraSkill.ActionId))
+            {
+                return false;
+            }
+
+            return orig(a, b);
+        }
+
         private static void AddMissingBindings(UserProfile userProfile)
         {
             AddActionMaps(RewiredAction.FirstExtraSkill, userProfile);
             AddActionMaps(RewiredAction.SecondExtraSkill, userProfile);
             AddActionMaps(RewiredAction.ThirdExtraSkill, userProfile);
             AddActionMaps(RewiredAction.FourthExtraSkill, userProfile);
+            AddActionMaps(RewiredAction.ExtraModifier, userProfile);
         }
 
-        private static void FillActionMaps(RewiredAction action, List<ControllerMap_Editor> keyboardMaps, List<ControllerMap_Editor> joystickMaps)
+        private static void FillActionMaps(RewiredAction action, UserData userData)
         {
-            foreach (var joystickMap in joystickMaps)
+            foreach (var joystickMap in userData.joystickMaps)
             {
                 if (joystickMap.categoryId == 0 && joystickMap.actionElementMaps.All(map => map.actionId != action.ActionId))
                 {
@@ -92,7 +108,7 @@ namespace ExtraSkillSlots
                 }
             }
 
-            foreach (var keyboardMap in keyboardMaps)
+            foreach (var keyboardMap in userData.keyboardMaps)
             {
                 if (keyboardMap.categoryId == 0 && keyboardMap.actionElementMaps.All(map => map.actionId != action.ActionId))
                 {
@@ -118,7 +134,6 @@ namespace ExtraSkillSlots
                 resultMap._keyboardKeyCode = action.DefaultKeyboardKey;
                 action.DefaultKeyboardMap.cVYzDXVDMNXvRMrklCVdVyeXGAlK(userProfile.keyboardMap);
             }
-        
         }
     }
 }
